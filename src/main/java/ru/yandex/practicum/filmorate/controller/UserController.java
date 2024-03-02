@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.User;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +27,7 @@ public class UserController {
     @SneakyThrows
     @PostMapping(value = "/user")
     public ResponseEntity<?> createUser(@RequestBody @Valid User user) {
-        if ((user.getName() == null) || (user.getName().isEmpty())){
+        if ((user.getName() == null) || (user.getName().isEmpty())) {
             log.info("User has null or empty name");
             user.setName(user.getLogin());
         }
@@ -41,7 +39,7 @@ public class UserController {
     @SneakyThrows
     @PutMapping(value = "/user")
     public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
-        if ((user.getName() == null) || (user.getName().isEmpty())){
+        if ((user.getName() == null) || (user.getName().isEmpty())) {
             user.setName(user.getLogin());
         }
         log.info("User was update");
