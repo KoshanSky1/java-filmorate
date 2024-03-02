@@ -32,7 +32,7 @@ public class FilmController {
     public ResponseEntity<?> createFilm(@RequestBody @Valid Film film) {
         LocalDate newDate = new java.sql.Date(film.getReleaseDate().getTime()).toLocalDate();
         log.debug("newDate = " + newDate);
-        if (newDate.isBefore(Constant.ERROR_DATE)){
+        if (newDate.isBefore(Constant.ERROR_DATE)) {
             throw new ValidationException("Date is before 1895-12-28");
         }
         films.put(film.getId(), film);
