@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.util.Constant;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -25,6 +24,8 @@ import java.util.Map;
 @RequestMapping(value = "/api/films")
 public class FilmController {
 
+    public final static LocalDate ERROR_DATE = LocalDate.parse("1895-12-28");
+
     private final Map<Integer, Film> films = new HashMap<>();
 
     @SneakyThrows
@@ -32,7 +33,7 @@ public class FilmController {
     public ResponseEntity<?> createFilm(@RequestBody @Valid Film film) {
         LocalDate newDate = new java.sql.Date(film.getReleaseDate().getTime()).toLocalDate();
         log.debug("newDate = " + newDate);
-        if (newDate.isBefore(Constant.ERROR_DATE)) {
+        if (newDate.isBefore(ERROR_DATE)) {
             throw new ValidationException("Date is before 1895-12-28");
         }
         films.put(film.getId(), film);
