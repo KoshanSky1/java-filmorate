@@ -25,7 +25,6 @@ import java.util.Map;
 public class FilmController {
 
     private int id = 0;
-    public final LocalDate ERROR_DATE = LocalDate.parse("1895-12-28"); //'1895-12-28';
 
     private final Map<Integer, Film> films = new HashMap<>();
 
@@ -33,7 +32,7 @@ public class FilmController {
     @PostMapping
     public ResponseEntity<?> createFilm(@Valid @RequestBody Film film) {
 
-        if (film.getReleaseDate().isBefore(ERROR_DATE)) {
+        if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
             throw new ValidationException("Date is before 1895-12-28");
         }
         film.setId(++id);
