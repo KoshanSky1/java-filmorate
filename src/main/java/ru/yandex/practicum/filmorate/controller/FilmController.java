@@ -24,8 +24,8 @@ import java.util.Map;
 @RequestMapping(value = "/films")
 public class FilmController {
 
-    private static int id = 0;
-    public final static LocalDate ERROR_DATE = LocalDate.parse("1895-12-28"); //'1895-12-28';
+    private int id = 0;
+    public final LocalDate ERROR_DATE = LocalDate.parse("1895-12-28"); //'1895-12-28';
 
     private final Map<Integer, Film> films = new HashMap<>();
 
