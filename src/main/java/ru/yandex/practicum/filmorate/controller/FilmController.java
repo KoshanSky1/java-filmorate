@@ -21,28 +21,32 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/films")
+@RequestMapping(value = "/films")
 public class FilmController {
 
-    public final static LocalDate ERROR_DATE = LocalDate.parse("1895-12-28");
+    private static int id = 0;
+    public final static LocalDate ERROR_DATE = LocalDate.parse("1895-12-28"); //'1895-12-28';
 
     private final Map<Integer, Film> films = new HashMap<>();
 
     @SneakyThrows
-    @PostMapping(value = "/film")
-    public ResponseEntity<?> createFilm(@RequestBody @Valid Film film) {
-        LocalDate newDate = new java.sql.Date(film.getReleaseDate().getTime()).toLocalDate();
-        log.debug("newDate = " + newDate);
-        if (newDate.isBefore(ERROR_DATE)) {
+    @PostMapping
+    public ResponseEntity<?> createFilm(@Valid @RequestBody Film film) {
+
+        if (film.getReleaseDate().isBefore(ERROR_DATE)) {
             throw new ValidationException("Date is before 1895-12-28");
         }
+        film.setId(++id);
         films.put(film.getId(), film);
         log.info("Film was create");
         return new ResponseEntity<>(film, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/film")
-    public ResponseEntity<?> updateFilm(@RequestBody @Valid Film film) {
+    @PutMapping
+    public ResponseEntity<?> updateFilm(@Valid @RequestBody Film film) {
+        if (!films.containsKey(film.getId())) {
+            throw new ValidationException("Film not exist");
+        }
         films.put(film.getId(), film);
         log.info("Film was update");
         return new ResponseEntity<>(film, HttpStatus.OK);

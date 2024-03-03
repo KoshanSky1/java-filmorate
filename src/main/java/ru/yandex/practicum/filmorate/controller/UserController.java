@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
@@ -19,31 +20,37 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/users")
+@RequestMapping(value = "/users")
 public class UserController {
 
+    private static int id = 0;
     public final Map<Integer, User> users = new HashMap<>();
 
     @SneakyThrows
-    @PostMapping(value = "/user")
-    public ResponseEntity<?> createUser(@RequestBody @Valid User user) {
+    @PostMapping
+    public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
+        log.debug("user = " + user);
         if ((user.getName() == null) || (user.getName().isEmpty())) {
             log.info("User has null or empty name");
             user.setName(user.getLogin());
         }
-        log.info("User was create");
+        user.setId(++id);
         users.put(user.getId(), user);
+        log.info("User was create");
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @SneakyThrows
-    @PutMapping(value = "/user")
-    public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
+    @PutMapping
+    public ResponseEntity<?> updateUser(@Valid @RequestBody User user) {
         if ((user.getName() == null) || (user.getName().isEmpty())) {
             user.setName(user.getLogin());
         }
-        log.info("User was update");
+        if (!users.containsKey(user.getId())) {
+            throw new ValidationException("User not exist");
+        }
         users.put(user.getId(), user);
+        log.info("User was update");
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

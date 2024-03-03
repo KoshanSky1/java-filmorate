@@ -4,14 +4,13 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 public class User {
 
-    @NotNull(message = "Id is required")
     private int id;
     @Email(message = "Email is incorrect")
     @NotNull(message = "Email is required")
@@ -21,6 +20,6 @@ public class User {
     private String login;
     private String name;
     @NotNull(message = "Birthday is required")
-    @Past(message = "Birthday must not be later than the current date")
-    private Date birthday;
+    @PastOrPresent(message = "Birthday must not be later than the current date")
+    private LocalDate birthday;
 }
