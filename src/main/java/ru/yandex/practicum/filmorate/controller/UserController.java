@@ -16,6 +16,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -28,12 +29,10 @@ public class UserController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         log.debug("user = " + user);
-        if ((user.getName() == null) || (user.getName().isEmpty())) {
-            log.info("User has null or empty name");
-            user.setName(user.getLogin());
-        }
+        log.info("Login of user = " + user.getLogin());
+        log.info("Default name of user = " + user.getName());
         user.setId(++id);
         users.put(user.getId(), user);
         log.info("User was create");
@@ -42,10 +41,9 @@ public class UserController {
 
     @SneakyThrows
     @PutMapping
-    public ResponseEntity<?> updateUser(@Valid @RequestBody User user) {
-        if ((user.getName() == null) || (user.getName().isEmpty())) {
-            user.setName(user.getLogin());
-        }
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
+        log.info("Login of user = " + user.getLogin());
+        log.info("Default name of user = " + user.getName());
         if (!users.containsKey(user.getId())) {
             throw new ValidationException("User not exist");
         }
@@ -55,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<>(new ArrayList<>(users.values()), HttpStatus.OK);
     }
 }

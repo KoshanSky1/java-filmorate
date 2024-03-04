@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -30,7 +31,7 @@ public class FilmController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<?> createFilm(@Valid @RequestBody Film film) {
+    public ResponseEntity<Film> createFilm(@Valid @RequestBody Film film) {
 
         if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
             throw new ValidationException("Date is before 1895-12-28");
@@ -42,7 +43,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateFilm(@Valid @RequestBody Film film) {
+    public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
         if (!films.containsKey(film.getId())) {
             throw new ValidationException("Film not exist");
         }
@@ -52,7 +53,7 @@ public class FilmController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllFilms() {
+    public ResponseEntity<List<Film>> getAllFilms() {
         return new ResponseEntity<>(new ArrayList<>(films.values()), HttpStatus.OK);
     }
 }
