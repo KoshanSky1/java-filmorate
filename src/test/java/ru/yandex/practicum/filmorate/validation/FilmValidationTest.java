@@ -152,7 +152,7 @@ class FilmValidationTest {
         Film updatedFilm = Film.builder()
                 .name("Титаник")
                 .description("Американская эпическая романтическая драма и фильм катастрофа")
-                .releaseDate( LocalDate.of(1997, Month.DECEMBER, 14))
+                .releaseDate(LocalDate.of(1997, Month.DECEMBER, 14))
                 .duration(184L)
                 .build();
 
@@ -172,7 +172,7 @@ class FilmValidationTest {
         Film updatedFilm = Film.builder()
                 .name("Титаник")
                 .description("Американская эпическая романтическая драма и фильм катастрофа")
-                .releaseDate( LocalDate.of(1997, Month.DECEMBER, 14))
+                .releaseDate(LocalDate.of(1997, Month.DECEMBER, 14))
                 .duration(184L)
                 .build();
 
