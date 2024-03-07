@@ -18,7 +18,7 @@ public class Film {
     private String description;
     private LocalDate releaseDate;
     @Positive
-    private Long duration ;
+    private Long duration;
 
     public Film(String name, String description, LocalDate releaseDate, Long duration) {
         this.name = name;
