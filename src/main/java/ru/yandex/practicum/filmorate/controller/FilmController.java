@@ -39,7 +39,7 @@ public class FilmController {
         if (film.getDuration() < 0) { //для тестов
             throw new ValidationException("Продолжительность фильма должна быть положительной.");
         }
-        if(film.getReleaseDate().isBefore(movieBirthday)) {
+        if (film.getReleaseDate().isBefore(movieBirthday)) {
             log.debug("Валидация не пройдена: дата релиза ранее дня рождения кино");
             throw new ValidationException("Дата релиза фильма должна быть не раньше 28 декабря 1895 года.");
         }
@@ -65,7 +65,7 @@ public class FilmController {
         if (film.getDuration() < 0) { //для тестов
             throw new ValidationException("Продолжительность фильма должна быть положительной.");
         }
-        if(film.getReleaseDate().isBefore(movieBirthday)) {
+        if (film.getReleaseDate().isBefore(movieBirthday)) {
             log.debug("Валидация не пройдена: дата релиза ранее дня рождения кино");
             throw new ValidationException("Дата релиза фильма должна быть не раньше 28 декабря 1895 года.");
         }
