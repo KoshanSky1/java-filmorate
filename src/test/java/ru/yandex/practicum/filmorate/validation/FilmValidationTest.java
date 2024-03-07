@@ -15,8 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FilmValidationTest {
     private final FilmController filmController = new FilmController();
-    private final Film filmNumberOne = new Film("Титаник", "Американская эпическая романтическая драма",
-            LocalDate.of(1997, Month.DECEMBER, 14), 154L);
+    private final Film filmNumberOne = Film.builder()
+            .name("Титаник")
+            .description("Американская эпическая романтическая драма")
+            .releaseDate(LocalDate.of(1997, Month.DECEMBER, 14))
+            .duration(154L)
+            .build();
 
     @BeforeEach
     protected void addTestFilm() {
@@ -51,8 +55,12 @@ class FilmValidationTest {
 
     @Test
     void createWithEmptyFilmName() {
-        Film testFilm = new Film("   ", "Test description",
-                LocalDate.of(2000, Month.DECEMBER, 26), 180L);
+        Film testFilm = Film.builder()
+                .name("   ")
+                .description("Test description")
+                .releaseDate(LocalDate.of(2000, Month.DECEMBER, 26))
+                .duration(180L)
+                .build();
 
         final ValidationException exception = assertThrows(
                 ValidationException.class,
@@ -70,10 +78,14 @@ class FilmValidationTest {
 
     @Test
     void createWithADescriptionExceeding200Characters() {
-        Film testFilm = new Film("Test", "TestTestTestTestTestTestTestTestTestTestTestTestTestTest" +
-                "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest" +
-                "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest",
-            LocalDate.of(2000, Month.DECEMBER, 26), 180L);
+        Film testFilm = Film.builder()
+                .name("Test")
+                .description("TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest" +
+                        "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest" +
+                        "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest")
+                .releaseDate(LocalDate.of(2000, Month.DECEMBER, 26))
+                .duration(180L)
+                .build();
 
         final ValidationException exception = assertThrows(
             ValidationException.class,
@@ -91,8 +103,12 @@ class FilmValidationTest {
 
     @Test
     void createWithAReleaseDateFromThePast() {
-        Film testFilm = new Film("Test", "Test description",
-                LocalDate.of(1700, Month.DECEMBER, 26), 180L);
+        Film testFilm = Film.builder()
+                .name("Test")
+                .description("Test description")
+                .releaseDate(LocalDate.of(1700, Month.DECEMBER, 14))
+                .duration(180L)
+                .build();
 
         final ValidationException exception = assertThrows(
                 ValidationException.class,
@@ -110,8 +126,12 @@ class FilmValidationTest {
 
     @Test
     void createWithNegativeDuration() {
-        Film testFilm = new Film("Test", "Test description",
-                LocalDate.of(1700, Month.DECEMBER, 26), -180L);
+        Film testFilm = Film.builder()
+                .name("Test")
+                .description("Test description")
+                .releaseDate(LocalDate.of(1999, Month.DECEMBER, 14))
+                .duration(-180L)
+                .build();
 
         final ValidationException exception = assertThrows(
                 ValidationException.class,
@@ -129,8 +149,12 @@ class FilmValidationTest {
 
     @Test
     void put() {
-        Film updatedFilm = new Film("Титаник", "Американская эпическая романтическая драма и фильм катастрофа",
-                LocalDate.of(1997, Month.DECEMBER, 14), 184L);
+        Film updatedFilm = Film.builder()
+                .name("Титаник")
+                .description("Американская эпическая романтическая драма и фильм катастрофа")
+                .releaseDate( LocalDate.of(1997, Month.DECEMBER, 14))
+                .duration(184L)
+                .build();
 
         updatedFilm.setId(filmNumberOne.getId());
         filmController.put(updatedFilm);
@@ -145,8 +169,12 @@ class FilmValidationTest {
 
     @Test
     void putWithNonExistentId() {
-        Film updatedFilm = new Film("Титаник", "Американская эпическая романтическая драма и фильм катастрофа",
-                LocalDate.of(1997, Month.DECEMBER, 14), 184L);
+        Film updatedFilm = Film.builder()
+                .name("Титаник")
+                .description("Американская эпическая романтическая драма и фильм катастрофа")
+                .releaseDate( LocalDate.of(1997, Month.DECEMBER, 14))
+                .duration(184L)
+                .build();
 
         updatedFilm.setId(9999);
 
@@ -166,8 +194,12 @@ class FilmValidationTest {
 
     @Test
     void putWithEmptyFilmName() {
-        Film testFilm = new Film("   ", "Test description",
-                LocalDate.of(1997, Month.DECEMBER, 14), 184L);
+        Film testFilm = Film.builder()
+                .name("   ")
+                .description("Test description")
+                .releaseDate(LocalDate.of(1997, Month.DECEMBER, 14))
+                .duration(184L)
+                .build();
 
         testFilm.setId(filmNumberOne.getId());
 
@@ -187,10 +219,14 @@ class FilmValidationTest {
 
     @Test
     void putWithADescriptionExceeding200Characters() {
-        Film testFilm = new Film("Test", "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTest" +
-                "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest" +
-                "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest",
-                LocalDate.of(2000, Month.DECEMBER, 26), 180L);
+        Film testFilm = Film.builder()
+                .name("Test")
+                .description("TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest" +
+                        "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest" +
+                        "TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest")
+                .releaseDate(LocalDate.of(2000, Month.DECEMBER, 26))
+                .duration(180L)
+                .build();
 
         testFilm.setId(filmNumberOne.getId());
 
@@ -210,8 +246,12 @@ class FilmValidationTest {
 
     @Test
     void putWithAReleaseDateFromThePast() {
-        Film testFilm = new Film("Test", "Test description",
-                LocalDate.of(1700, Month.DECEMBER, 26), 180L);
+        Film testFilm = Film.builder()
+                .name("Test")
+                .description("Test description")
+                .releaseDate(LocalDate.of(1700, Month.DECEMBER, 14))
+                .duration(184L)
+                .build();
 
         testFilm.setId(filmNumberOne.getId());
 
@@ -231,8 +271,12 @@ class FilmValidationTest {
 
     @Test
     void putWithNegativeDuration() {
-        Film testFilm = new Film("Test", "Test description",
-                LocalDate.of(1700, Month.DECEMBER, 26), -180L);
+        Film testFilm = Film.builder()
+                .name("Test")
+                .description("Test description")
+                .releaseDate(LocalDate.of(2008, Month.DECEMBER, 14))
+                .duration(-184L)
+                .build();
 
         testFilm.setId(filmNumberOne.getId());
 

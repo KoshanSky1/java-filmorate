@@ -16,7 +16,7 @@ import static java.util.Calendar.DECEMBER;
 @RequestMapping("/films")
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
-    LocalDate movieBirthday = LocalDate.of(1895, DECEMBER, 28);
+    private final LocalDate movieBirthday = LocalDate.of(1895, DECEMBER, 28);
     private Integer id = 0;
 
     @GetMapping
