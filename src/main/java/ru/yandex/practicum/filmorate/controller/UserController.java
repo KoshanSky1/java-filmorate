@@ -41,7 +41,7 @@ public class UserController {
             log.debug("Валидация не пройдена: дата рождения из будущего");
             throw new ValidationException("Дата рождения не может быть в будущем.");
         }
-        if(user.getName() == null || user.getName().isBlank() || user.getName().isEmpty()) {
+        if (user.getName() == null || user.getName().isBlank() || user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
         ++this.id;
@@ -69,7 +69,7 @@ public class UserController {
             log.debug("Валидация не пройдена: дата рождения из будущего");
             throw new ValidationException("Дата рождения не может быть в будущем.");
         }
-        if(user.getName() == null || user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         users.put(user.getId(), user);
