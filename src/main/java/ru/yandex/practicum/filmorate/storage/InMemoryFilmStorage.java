@@ -81,8 +81,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (films.containsValue(film)) {
             films.remove(film.getId());
             log.debug("Фильм " + film.getId() + " успешно удалён");
-        }
-        else {
+        } else {
             log.debug("Фильм не найден");
             throw new ValidationException("Фильм " + film.getId() + " не найден");
         }

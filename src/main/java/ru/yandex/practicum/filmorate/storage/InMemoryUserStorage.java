@@ -81,8 +81,7 @@ public class InMemoryUserStorage implements  UserStorage {
     public void delete(User user) {
         if (users.containsValue(user)) {
             log.debug("Пользователь " + user.getId() + " успешно удалён");
-        }
-        else {
+        } else {
             log.debug("Пользователь не найден");
             throw new ValidationException("Пользователь " + user.getId() + " не найден");
         }
