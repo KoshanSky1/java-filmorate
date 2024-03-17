@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.constraints;
+package ru.yandex.practicum.filmorate.constraint;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.User;
