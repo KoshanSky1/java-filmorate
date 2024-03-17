@@ -29,11 +29,17 @@ public class UserService {
         return user;
     }
 
-    public User create(User user) { return userStorage.create(user); }
+    public User create(User user) {
+        return userStorage.create(user);
+    }
 
-    public User put(User user) { return userStorage.put(user); }
+    public User put(User user) {
+        return userStorage.put(user);
+    }
 
-    public void delete(User user) { userStorage.delete(user); }
+    public void delete(User user) {
+        userStorage.delete(user);
+    }
 
     public void addAFriend(Integer id, Integer friendId) {
         User user = getUsers().get(id);
