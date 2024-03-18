@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -28,7 +27,7 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        log.info(format("Start update idUser = %s", user.getId()));
+        log.info(format("Start update idUser = [%s]", user.getId()));
         return userStorage.updateUser(user);
     }
 

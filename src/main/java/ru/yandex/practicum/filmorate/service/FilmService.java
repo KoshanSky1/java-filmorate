@@ -26,7 +26,7 @@ public class FilmService {
 
 
     public Film createFilm(Film film) {
-        log.info(format("Start create idFilm = %s", film.getId()));
+        log.info(format("Start create idFilm = [%s]", film.getId()));
         if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
             throw new ValidationException("Date is before 1895-12-28", HttpStatus.BAD_REQUEST.value());
         }
@@ -34,17 +34,17 @@ public class FilmService {
     }
 
     public Film updateFilm(Film film) {
-        log.info(format("Start update idFilm = %s", film.getId()));
+        log.info(format("Start update idFilm = [%s]", film.getId()));
         return filmStorage.updateFilm(film);
     }
 
     public boolean deleteFilm(int idFilm) {
-        log.info(format("Start delete idFilm = %s", idFilm));
+        log.info(format("Start delete idFilm = [%s]", idFilm));
         return filmStorage.deleteFilm(idFilm);
     }
 
     public Film getFilm(int idFilm) {
-        log.info(format("Start get idFilm = %s", idFilm));
+        log.info(format("Start get idFilm = [%s]", idFilm));
         return filmStorage.getFilm(idFilm);
     }
 
