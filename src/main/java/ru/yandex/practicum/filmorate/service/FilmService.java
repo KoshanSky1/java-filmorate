@@ -2,11 +2,13 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,18 +18,18 @@ import static java.lang.String.format;
 @Service
 public class FilmService {
     private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage,
-                       @Autowired(required = false) UserStorage userStorage) {
+    public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
     }
 
 
     public Film createFilm(Film film) {
         log.info(format("Start create idFilm = %s", film.getId()));
+        if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
+            throw new ValidationException("Date is before 1895-12-28", HttpStatus.BAD_REQUEST.value());
+        }
         return filmStorage.createFilm(film);
     }
 
@@ -56,7 +58,7 @@ public class FilmService {
         Film film = getFilm(idFilm);
         film.addLike(idUser);
         updateFilm(film);
-        log.info("Like added");
+        log.info(format("Like added to idFilm = [%s]", idFilm));
     }
 
     public void deleteLike(int idFilm, int idUser) {
@@ -64,7 +66,7 @@ public class FilmService {
         Film film = getFilm(idFilm);
         film.deleteLike(idUser);
         updateFilm(film);
-        log.info("Like was delete");
+        log.info(format("Like was delete to idFilm = [%s]", idFilm));
     }
 
     /**
@@ -75,7 +77,7 @@ public class FilmService {
      * @return список фильмов
      */
     public List<Film> getPopularFilms(int count) {
-        log.info("Start get popular films");
+        log.info(format("Start get popular films count = [%s]", count));
         return getAllFilms().stream()
                 .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
                 .limit(count)

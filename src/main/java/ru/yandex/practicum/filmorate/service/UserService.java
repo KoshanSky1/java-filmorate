@@ -17,7 +17,7 @@ public class UserService {
 
     private final UserStorage userStorage;
 
-    @Autowired
+
     public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
     }
@@ -45,14 +45,14 @@ public class UserService {
     }
 
     public void addFriend(int idUser, int idFriend) {
-        log.info(format("Start add idUser = [%s] to idFriend = [%s] friends", idFriend, idUser));
+        log.info(format("Start add idFriend = [%s] to idUser = [%s] friends", idFriend, idUser));
         User user = getUser(idUser);
         User friend = getUser(idFriend);
         user.addFriend(friend.getId());
         friend.addFriend(user.getId());
         updateUser(user);
         updateUser(friend);
-        log.info("Success add to friends");
+        log.info(format("Success add idFriend = [%s] to idUser = [%s] friends", idFriend, idUser));
     }
 
     public void deleteFriend(int idUser, int idFriend) {
@@ -63,7 +63,7 @@ public class UserService {
         friend.deleteFriend(idUser);
         updateUser(user);
         updateUser(friend);
-        log.info("Success delete friend");
+        log.info(format("Success delete idFriend = [%s] from idUser = [%s] friends", idFriend, idUser));
     }
 
     public List<User> findCommonFriends(int idUser, int idFriend) {
