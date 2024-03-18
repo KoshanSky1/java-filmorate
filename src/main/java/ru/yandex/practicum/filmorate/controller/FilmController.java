@@ -1,77 +1,66 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.*;
 
-import static java.util.Calendar.DECEMBER;
-
 @RestController
-@Slf4j
 @RequestMapping("/films")
 public class FilmController {
-    private final Map<Integer, Film> films = new HashMap<>();
-    private final LocalDate movieBirthday = LocalDate.of(1895, DECEMBER, 28);
-    private Integer id = 0;
+    private final FilmService filmService;
+
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @GetMapping
     public Collection<Film> findAll() {
-        return films.values();
+        return filmService.findAll();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        if (films.containsValue(film)) {
-            log.debug("Валидация не пройдена: такой фильм уже существует");
-            throw new ValidationException("Такой фильм уже существует.");
-        }
-        if (film.getName() == null || film.getName().isBlank()) { // для тестов
-            throw new ValidationException("Название фильма не может быть пустым.");
-        }
-        if (film.getDescription().length() > 200) { // для тестов
-            throw new ValidationException("Максимальная длина описания фильма — 200 символов.");
-        }
-        if (film.getDuration() < 0) { //для тестов
-            throw new ValidationException("Продолжительность фильма должна быть положительной.");
-        }
-        if (film.getReleaseDate().isBefore(movieBirthday)) {
-            log.debug("Валидация не пройдена: дата релиза ранее дня рождения кино");
-            throw new ValidationException("Дата релиза фильма должна быть не раньше 28 декабря 1895 года.");
-        }
-        ++this.id;
-        film.setId(id);
-        films.put(film.getId(), film);
-        log.info("Добавлен новый фильм: " + film);
-        return film;
+        return filmService.create(film);
     }
 
     @PutMapping
     public Film put(@Valid @RequestBody Film film) {
-        if (!films.containsKey(film.getId())) {
-            log.debug("Обновление невозможно: фильм не найден");
-            throw new ValidationException("Фильм не найден.");
+        return filmService.put(film);
+    }
+
+    @DeleteMapping
+    public void delete(@Valid @RequestBody Film film) {
+        filmService.delete(film);
+    }
+
+    @GetMapping("{filmId}")
+    public Film findFilm(@PathVariable("filmId") Integer filmId) {
+        return filmService.findFilmById(filmId);
+    }
+
+    @PutMapping("{id}/like/{userId}")
+    public void addLike(@PathVariable("id") Integer id, @PathVariable("userId") Integer userId) {
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("{id}/like/{userId}")
+    public void deleteLike(@PathVariable("id") Integer id, @PathVariable("userId") Integer userId) {
+        filmService.deleteLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> findPopular(
+            @RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
+        if (count <= 0) {
+            throw new IncorrectParameterException("Параметр сount меньше или равен нулю.");
         }
-        if (film.getName() == null || film.getName().isBlank()) { // для тестов
-            throw new ValidationException("Название фильма не может быть пустым.");
-        }
-        if (film.getDescription().length() > 200) { // для тестов
-            throw new ValidationException("Максимальная длина описания фильма — 200 символов.");
-        }
-        if (film.getDuration() < 0) { //для тестов
-            throw new ValidationException("Продолжительность фильма должна быть положительной.");
-        }
-        if (film.getReleaseDate().isBefore(movieBirthday)) {
-            log.debug("Валидация не пройдена: дата релиза ранее дня рождения кино");
-            throw new ValidationException("Дата релиза фильма должна быть не раньше 28 декабря 1895 года.");
-        }
-        films.put(film.getId(), film);
-        log.info("Фильм (id = " + film.getId() + ") успешно обновлён");
-        return film;
+        return filmService.displayPopularFilms(count);
     }
 
 }
