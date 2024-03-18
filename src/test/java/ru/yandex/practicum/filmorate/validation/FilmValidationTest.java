@@ -6,6 +6,10 @@ import org.junit.jupiter.api.function.Executable;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -14,7 +18,11 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmValidationTest {
-    private final FilmController filmController = new FilmController();
+    private final InMemoryFilmStorage filmStorage = new InMemoryFilmStorage();
+    private final InMemoryUserStorage userStorage = new InMemoryUserStorage();
+    private final UserService userService = new UserService(userStorage);
+    private final FilmService filmService = new FilmService(filmStorage, userService);
+    private final FilmController filmController = new FilmController(filmService);
     private final Film filmNumberOne = Film.builder()
             .name("Титаник")
             .description("Американская эпическая романтическая драма")
