@@ -4,56 +4,93 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.exeption.ValidationException;
+import ru.yandex.practicum.filmorate.exeption.ErrorResponse;
+import ru.yandex.practicum.filmorate.json.SuccessJSON;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping(value = "/films")
 public class FilmController {
 
-    private int id = 0;
+    private final FilmService filmService;
 
-    private final Map<Integer, Film> films = new HashMap<>();
+    FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @SneakyThrows
     @PostMapping
     public ResponseEntity<Film> createFilm(@Valid @RequestBody Film film) {
-
-        if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
-            throw new ValidationException("Date is before 1895-12-28");
-        }
-        film.setId(++id);
-        films.put(film.getId(), film);
-        log.info("Film was create");
-        return new ResponseEntity<>(film, HttpStatus.OK);
+        log.info("---START CREATE FILM ENDPOINT---");
+        return new ResponseEntity<>(filmService.createFilm(film), HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
-        if (!films.containsKey(film.getId())) {
-            throw new ValidationException("Film not exist");
+        log.info("---START UPDATE FILM ENDPOINT---");
+        return new ResponseEntity<>(filmService.updateFilm(film), HttpStatus.OK);
+    }
+
+    @SneakyThrows
+    @DeleteMapping("/{idFilm}")
+    public ResponseEntity<?> deleteFilm(@PathVariable int idFilm) {
+        log.info("---START DELETE FILM ENDPOINT---");
+        if (filmService.deleteFilm(idFilm)) {
+            return new ResponseEntity<>(new SuccessJSON("Film was delete"), HttpStatus.OK);
         }
-        films.put(film.getId(), film);
-        log.info("Film was update");
-        return new ResponseEntity<>(film, HttpStatus.OK);
+        return new ResponseEntity<>(new ErrorResponse("Error"), HttpStatus.BAD_REQUEST);
+    }
+
+    @SneakyThrows
+    @GetMapping("/{idFilm}")
+    public ResponseEntity<Film> findFilm(@PathVariable int idFilm) {
+        log.info("---START FIND FILM ENDPOINT---");
+        log.info("Film = " + filmService.getFilm(idFilm).toString());
+        return new ResponseEntity<>(filmService.getFilm(idFilm), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<Film>> getAllFilms() {
-        return new ResponseEntity<>(new ArrayList<>(films.values()), HttpStatus.OK);
+    public ResponseEntity<List<Film>> findAllFilms() {
+        log.info("---START FIND ALL FILMS ENDPOINT---");
+        return new ResponseEntity<>(filmService.getAllFilms(), HttpStatus.OK);
+    }
+
+    @SneakyThrows
+    @PutMapping("/{idFilm}/like/{idUser}")
+    public ResponseEntity<SuccessJSON> addLike(@PathVariable int idFilm,
+                                               @PathVariable int idUser) {
+        log.info("---START ADD LIKE ENDPOINT---");
+        filmService.addLike(idFilm, idUser);
+        return new ResponseEntity<>(new SuccessJSON("Like added"), HttpStatus.OK);
+    }
+
+    @SneakyThrows
+    @DeleteMapping("/{idFilm}/like/{idUser}")
+    public ResponseEntity<SuccessJSON> deleteLike(@PathVariable int idFilm,
+                                                  @PathVariable int idUser) {
+        log.info("---START DELETE LIKE ENDPOINT---");
+        filmService.deleteLike(idFilm, idUser);
+        return new ResponseEntity<>(new SuccessJSON("Like was delete"), HttpStatus.OK);
+    }
+
+    @SneakyThrows
+    @GetMapping("/popular")
+    public ResponseEntity<List<Film>> getMostPopularFilms(@RequestParam(defaultValue = "10") int count) {
+        log.info("---START GET MOST POPULAR FILMS ENDPOINT---");
+        return new ResponseEntity<>(filmService.getPopularFilms(count), HttpStatus.OK);
     }
 }

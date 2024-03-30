@@ -7,10 +7,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * Film.
- */
 @Data
 public class Film {
 
@@ -25,4 +24,13 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "Duration is required and must be greater than 0")
     private long duration;
+    private Set<Integer> likes = new HashSet<>();
+
+    public void addLike(final Integer id) {
+        likes.add(id);
+    }
+
+    public void deleteLike(final Integer id) {
+        likes.remove(id);
+    }
 }
