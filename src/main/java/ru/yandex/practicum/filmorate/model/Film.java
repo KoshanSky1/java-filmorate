@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -7,10 +8,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class Film {
 
     private int id;
@@ -23,14 +24,9 @@ public class Film {
     @NotNull(message = "Release date is required")
     private LocalDate releaseDate;
     @Positive(message = "Duration is required and must be greater than 0")
-    private long duration;
-    private Set<Integer> likes = new HashSet<>();
+    private int duration;
+    @NotNull(message = "Mpa id is required")
+    private Mpa mpa;
+    private List<Genre> genres;
 
-    public void addLike(final Integer id) {
-        likes.add(id);
-    }
-
-    public void deleteLike(final Integer id) {
-        likes.remove(id);
-    }
 }

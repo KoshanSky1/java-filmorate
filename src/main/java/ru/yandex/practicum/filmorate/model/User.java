@@ -1,18 +1,18 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.constraint.NameConstraint;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @NameConstraint
+@AllArgsConstructor
 public class User {
 
     private int id;
@@ -24,15 +24,7 @@ public class User {
     private String login;
     private String name;
     @NotNull(message = "Birthday is required")
-    @PastOrPresent(message = "Birthday must not be later than the current date")
+    @Past(message = "Birthday must not be later than the current date")
     private LocalDate birthday;
-    private final Set<Integer> friends = new HashSet<>();
 
-    public void addFriend(final Integer id) {
-        friends.add(id);
-    }
-
-    public void deleteFriend(final Integer id) {
-        friends.remove(id);
-    }
 }
