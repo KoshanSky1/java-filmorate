@@ -60,18 +60,12 @@ public class FilmService {
     public void addLike(int idFilm, int idUser) {
         log.info(format("Start add like idUser = [%s] to idFilm = [%s]", idUser, idFilm));
         likesFilmStorage.addLike(idFilm, idUser);
-        /*Film film = getFilm(idFilm);
-        film.addLike(idUser);
-        updateFilm(film);*/
         log.info(format("Like added to idFilm = [%s]", idFilm));
     }
 
     public void deleteLike(int idFilm, int idUser) {
         log.info(format("Start delete like idUser = [%s] from idFilm = [%s]", idUser, idFilm));
         likesFilmStorage.deleteLike(idFilm, idUser);
-        /*Film film = getFilm(idFilm);
-        film.deleteLike(idUser);
-        updateFilm(film);*/
         log.info(format("Like was delete to idFilm = [%s]", idFilm));
     }
 
@@ -84,10 +78,6 @@ public class FilmService {
      */
     public List<Film> getPopularFilms(int count) {
         log.info(format("Start get popular films count = [%s]", count));
-        /*return getAllFilms().stream()
-                .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
-                .limit(count)
-                .collect(Collectors.toList());*/
         return likesFilmStorage.getPopularFilms(count);
     }
 
