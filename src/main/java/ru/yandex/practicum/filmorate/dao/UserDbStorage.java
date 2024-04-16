@@ -34,16 +34,19 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-        log.info("Создан новый пользователь: " + findUserById(saveAndReturnId(user)));
-        return findUserById(saveAndReturnId(user));
+        Integer id = saveAndReturnId(user);
+        user.setId(id);
+        log.info("Создан новый пользователь: " + user);
+        return user;
     }
 
     @Override
     public User put(User user) {
        findUserById(user.getId());
-            String sqlQuery = "UPDATE users SET " +
-                    "user_email = ?, user_login = ?, user_name = ?, user_birthday = ?" +
-                    "WHERE user_id = ?";
+            String sqlQuery = "UPDATE users SET "
+                    + "user_email = ?, user_login = ?, user_name = ?, user_birthday = ?"
+                    + "WHERE user_id = ?";
+
             jdbcTemplate.update(sqlQuery,
                     user.getEmail(),
                     user.getLogin(),
@@ -79,8 +82,8 @@ public class UserDbStorage implements UserStorage {
         findUserById(id);
         findUserById(friendId);
         boolean status = checkFriendShipStatus(friendId,id);
-        String sqlQuery = "insert into friendship(user_from_id, user_to_id, status) " +
-                "values (?, ?, ?)";
+        String sqlQuery = "INSERT INTO friendship(user_from_id, user_to_id, status) "
+                + "VALUES (?, ?, ?)";
         if (status) {
                 jdbcTemplate.update(sqlQuery, friendId, id, true);
         } else {
@@ -93,38 +96,36 @@ public class UserDbStorage implements UserStorage {
     public List<User> getFriendsList(Integer id) {
         findUserById(id);
 
-        List<User> friends = new ArrayList<>();
-        String sqlQuery = "SELECT * FROM users AS u " +
-                "WHERE u.user_id IN (SELECT user_to_id FROM friendship " + "WHERE user_from_id = ?);";
-        SqlRowSet friendsRows = jdbcTemplate.queryForRowSet(sqlQuery, id);
-        while (friendsRows.next()) {
-            friends.add(jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id));
-        }
-        return friends;
+        String sqlQuery = "SELECT * FROM users AS u "
+                + "WHERE u.user_id IN (SELECT user_to_id FROM friendship "
+                + "WHERE user_from_id = ?);";
+        log.info("Сформирован список друзей для пользователя id=" + id);
+
+        return jdbcTemplate.query(sqlQuery, this::mapRowToUser, id);
     }
 
     @Override
     public void deleteFriend(Integer id, Integer friendId) {
         findUserById(id);
         findUserById(friendId);
-        String sqlUserFrom = "delete from friendship where user_from_id = ? and user_to_id = ?";
+
+        String sqlUserFrom = "DELETE FROM friendship WHERE user_from_id = ? AND user_to_id = ?";
+
         jdbcTemplate.update(sqlUserFrom, id, friendId);
+
         log.info("Дружба между пользователями " + id + " и " + friendId + " успешно удалена");
     }
 
     @Override
     public List<User> displayAListOfCommonFriends(Integer id, Integer otherId) {
-        List<User> commonFriends = new ArrayList<>();
         String sqlQuery = "SELECT * FROM users " +
                 "WHERE user_id IN (SELECT user_to_id FROM friendship " +
                 "WHERE user_from_id IN(?, ?) " +
                 "AND user_to_id NOT IN (?, ?));";
-        SqlRowSet friendsRows = jdbcTemplate.queryForRowSet(sqlQuery, id, otherId, id, otherId);
-        while (friendsRows.next()) {
-            commonFriends.add(jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id, otherId, id, otherId));
-        }
+
         log.info("Сформирован список общих друзей для пользователей: " + id + " и " + otherId);
-        return commonFriends;
+
+        return jdbcTemplate.query(sqlQuery, this::mapRowToUser, id, otherId, id, otherId);
     }
 
     @Override
@@ -143,8 +144,8 @@ public class UserDbStorage implements UserStorage {
     }
 
     private Integer saveAndReturnId(User user) {
-        String sqlQuery = "INSERT INTO users(user_email, user_login, user_name, user_birthday) " +
-                "VALUES (?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO users(user_email, user_login, user_name, user_birthday) "
+                + "VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"user_id"});

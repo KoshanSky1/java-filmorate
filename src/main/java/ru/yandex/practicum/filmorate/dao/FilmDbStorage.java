@@ -52,18 +52,20 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
+        int numbersOfGenres = 6;
+        int numbersOfRatings = 5;
         if (film.getReleaseDate().isBefore(movieBirthday)) {
             log.debug("Валидация не пройдена: дата релиза ранее дня рождения кино");
             throw new ValidationException("Дата релиза фильма должна быть не раньше 28 декабря 1895 года.");
         }
-        if (film.getMpa().getId() > 5) {
+        if (film.getMpa().getId() > numbersOfRatings) {
             log.debug("Валидация не пройдена: рейтинг не сущуствует");
             throw new ValidationException("Рейтинг с id " + film.getMpa().getId() + " не существует.");
         }
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
                 Integer id = genre.getId();
-                    if (id > 6) {
+                    if (id > numbersOfGenres) {
                     log.debug("Валидация не пройдена: жанр не существует");
                     throw new ValidationException("Жанр с id " + id + " не существует.");
                 }
@@ -80,9 +82,9 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film put(Film film) {
         if (film.getId() == null) {
-            String sqlQuery = "UPDATE films SET " +
-                    "film_name = ?, description = ?, release_date = ?, duration = ?, rating_id = ?" +
-                    "WHERE film_id = ?";
+            String sqlQuery = "UPDATE films SET "
+                    + "film_name = ?, description = ?, release_date = ?, duration = ?, rating_id = ?"
+                    + "WHERE film_id = ?";
             jdbcTemplate.update(sqlQuery,
                     film.getName(),
                     film.getDescription(),
@@ -93,9 +95,9 @@ public class FilmDbStorage implements FilmStorage {
             log.info("Фильм (id = " + film.getId() + ") успешно обновлён");
         } else {
             findFilmById(film.getId());
-            String sqlQuery = "UPDATE films SET " +
-                    "film_name = ?, description = ?, release_date = ?, duration = ?, rating_id = ?" +
-                    "WHERE film_id = ?";
+            String sqlQuery = "UPDATE films SET "
+                    + "film_name = ?, description = ?, release_date = ?, duration = ?, rating_id = ?"
+                    + "WHERE film_id = ?";
             jdbcTemplate.update(sqlQuery,
                     film.getName(),
                     film.getDescription(),
@@ -110,8 +112,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void delete(Film film) {
-        String sqlQuery = "DELETE FROM films WHERE film_id = ?";
-        jdbcTemplate.update(sqlQuery, film.getId());
+        String sqlFilm = "DELETE FROM films WHERE film_id = ?";
+        jdbcTemplate.update(sqlFilm, film.getId());
         log.info("Фильм (id = " + film.getId() + ") успешно удалён");
     }
 
@@ -190,8 +192,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Integer saveAndReturnId(Film film) {
-        String sqlQuery = "INSERT INTO films(film_name, description, release_date, duration, rating_id) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO films(film_name, description, release_date, duration, rating_id) "
+                + "VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"film_id"});
@@ -244,8 +246,8 @@ public class FilmDbStorage implements FilmStorage {
 
     private Set<Genre> getGenres(int filmId) {
         Set<Genre> genres = new HashSet<Genre>();
-        String sqlQuery = "SELECT * FROM genres WHERE genre_id IN (SELECT genre_id FROM film_genre " +
-                "WHERE film_id = ?)";
+        String sqlQuery = "SELECT * FROM genres WHERE genre_id IN (SELECT genre_id FROM film_genre "
+                + "WHERE film_id = ?)";
 
         genres.addAll(jdbcTemplate.query(sqlQuery, this::mapRowToGenre, filmId));
         return genres;

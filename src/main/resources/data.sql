@@ -1,4 +1,4 @@
-INSERT INTO genres (genre_id, genre_name)
+INSERT INTO PUBLIC.GENRES (genre_id, genre_name)
 VALUES (1, 'Комедия'),
 (2, 'Драма'),
 (3, 'Мультфильм'),
@@ -6,7 +6,7 @@ VALUES (1, 'Комедия'),
 (5, 'Документальный'),
 (6, 'Боевик');
 
-INSERT INTO rating (rating_id, rating_name)
+INSERT INTO PUBLIC.RATING (rating_id, rating_name)
 VALUES (1, 'G'),
 (2, 'PG'),
 (3, 'PG-13'),
