@@ -25,5 +25,4 @@ public class User {
     private LocalDate birthday;
     private final Set<Integer> friends = new LinkedHashSet<Integer>();
     private final Set<Integer> films = new LinkedHashSet<Integer>();
-
 }

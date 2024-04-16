@@ -21,7 +21,7 @@ class FilmValidationTest {
     private final InMemoryFilmStorage filmStorage = new InMemoryFilmStorage();
     private final InMemoryUserStorage userStorage = new InMemoryUserStorage();
     private final UserService userService = new UserService(userStorage);
-    private final FilmService filmService = new FilmService(filmStorage, userService);
+    private final FilmService filmService = new FilmService(filmStorage);
     private final FilmController filmController = new FilmController(filmService);
     private final Film filmNumberOne = Film.builder()
             .name("Титаник")
