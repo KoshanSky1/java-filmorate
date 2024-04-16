@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import static java.lang.String.format;
 
-@Component("FilmDbStorage")
+@Repository("FilmDbStorage")
 @RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
 

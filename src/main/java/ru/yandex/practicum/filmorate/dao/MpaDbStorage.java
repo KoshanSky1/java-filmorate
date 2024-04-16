@@ -5,7 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
@@ -19,7 +19,7 @@ import java.util.Objects;
 
 import static java.lang.String.format;
 
-@Component("MpaDbStorage")
+@Repository("MpaDbStorage")
 @RequiredArgsConstructor
 public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
