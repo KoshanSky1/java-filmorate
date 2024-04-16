@@ -258,7 +258,7 @@ class FilmDbStorageTest {
 
         Collection<Film> savedFilms = filmDbStorage.findAll();
 
-        assertThat(SavedFilms)
+        assertThat(savedFilms)
                 .isNotNull()
                 .usingRecursiveComparison()
                 .isEqualTo(films.values());

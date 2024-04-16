@@ -125,9 +125,9 @@ class UserDbStorageTest {
         users.put(2, userNumberTwo);
         users.remove(1);
 
-        Collection<User> SavedUsers = userDbStorage.findAll();
+        Collection<User> savedUsers = userDbStorage.findAll();
 
-        assertThat(SavedUsers)
+        assertThat(savedUsers)
                 .isNotNull()
                 .usingRecursiveComparison()
                 .isEqualTo(users.values());
