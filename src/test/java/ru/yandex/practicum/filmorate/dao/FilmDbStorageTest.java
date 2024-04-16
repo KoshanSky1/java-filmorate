@@ -256,7 +256,7 @@ class FilmDbStorageTest {
         films.put(2, filmNumberTwo);
         films.remove(1);
 
-        Collection<Film> SavedFilms = filmDbStorage.findAll();
+        Collection<Film> savedFilms = filmDbStorage.findAll();
 
         assertThat(SavedFilms)
                 .isNotNull()
