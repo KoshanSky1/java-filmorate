@@ -1,13 +1,11 @@
 package ru.yandex.practicum.filmorate.dao;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -23,9 +21,7 @@ import java.util.*;
 
 import static java.util.Calendar.DECEMBER;
 
-//@Component
-@Repository
-//@AllArgsConstructor
+@Component
 @Slf4j
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
@@ -45,7 +41,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film findFilmById(Integer filmId) {
         String sqlQuery = "SELECT * FROM films WHERE film_id = ?";
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sqlQuery, filmId);
-        if(filmRows.next()) {
+        if (filmRows.next()) {
             log.info("Найден фильм: {} {}", filmRows.getString("film_id"), filmRows.getString("film_name"));
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, filmId);
         } else {
@@ -183,7 +179,7 @@ public class FilmDbStorage implements FilmStorage {
     public Mpa findRatingById(Integer id) {
         String sqlQuery = "SELECT * FROM rating WHERE rating_id = ?";
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet(sqlQuery, id);
-        if(mpaRows.next()) {
+        if (mpaRows.next()) {
             log.info("Рейтинг с идентификатором {} найден.", id);
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToRating, id);
         } else {
@@ -229,8 +225,9 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet(sqlQuery, id);
         if (mpaRows.next()) {
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToRating, id);
+        } else {
+            return null;
         }
-        else return null;
     }
 
     private void addGenre(int filmId, Set<Genre> genres) {

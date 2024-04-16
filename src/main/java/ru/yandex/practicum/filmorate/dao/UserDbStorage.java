@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
@@ -17,8 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-@Repository
-//@Component
+
+@Component
 @Slf4j
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
@@ -66,7 +65,7 @@ public class UserDbStorage implements UserStorage {
     public User findUserById(Integer userId) {
         String sqlQuery = "SELECT * FROM users WHERE user_id = ?";
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sqlQuery, userId);
-        if(userRows.next()) {
+        if (userRows.next()) {
             log.info("Найден пользователь: {} {}", userRows.getString("user_id"), userRows.getString("user_login"));
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, userId);
         } else {
@@ -82,7 +81,7 @@ public class UserDbStorage implements UserStorage {
         boolean status = checkFriendShipStatus(friendId,id);
         String sqlQuery = "insert into friendship(user_from_id, user_to_id, status) " +
                 "values (?, ?, ?)";
-        if(status) {
+        if (status) {
                 jdbcTemplate.update(sqlQuery, friendId, id, true);
         } else {
                 jdbcTemplate.update(sqlQuery, id, friendId, false);
