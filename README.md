@@ -6,38 +6,34 @@ https://app.quickdatabasediagrams.com/#/d/NvAnnc
 
 Request Examples:
 
-1. Getting a list of all movies:
-   SELECT name
+1. Get list of all films:
+   SELECT *
    FROM films;
-2. Getting a movie by id:
-   SELECT name
+2. Get film by id:
+   SELECT *
    FROM films
    WHERE film_id = id;
-3. Getting a list of the most popular movies:
-   SELECT name
-   FROM films
-   WHERE film_id = id
-   ORDER BY likes DESC
-   LIMIT 10;
-4. Getting a list of all users:
-   SELECT name
+3. Get list of the count popular movies:
+   "SELECT * FROM films
+   LEFT JOIN (SELECT film_id, COUNT (film_user.user_id) as count from film_user
+   GROUP BY films.film_id
+   ORDER BY count DESC
+   LIMIT count;
+4. Get list of all users:
+   SELECT *
    FROM users;
-5. Getting a user by id:
-   SELECT name
+5. Get user by id:
+   SELECT *
    FROM users
    WHERE user_id = id;
-6. Getting a list of friends:
-   SELECT name
-   FROM users
-   WHERE user_id IN (SELECT friend_id
-   FROM friends
-   WHERE user_id = id);
-7. Getting a list of mutual friends:
-   SELECT name
-   FROM users
-   WHERE user_id IN (SELECT DISTINCT friend_id
-   FROM friends
-   WHERE user_id IN ((user_id, friend_id)
-   AND friend_id NOT IN(user_id, friend_id)));
+6. Get list of friends:
+   SELECT * FROM users
+   WHERE user_id IN (SELECT user_to_id FROM friendship
+   WHERE user_from_id = id);
+7. Get list of common friends:
+   SELECT * FROM users
+   WHERE user_id IN (SELECT user_to_id FROM friendship
+   WHERE user_from_id IN(id, otherId) " +
+   AND user_to_id NOT IN (id, otherId));
    
    
