@@ -2,15 +2,16 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.LikesFilmStorage;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -18,10 +19,13 @@ import static java.lang.String.format;
 @Service
 public class FilmService {
     private final FilmStorage filmStorage;
+    private final LikesFilmStorage likesFilmStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("LikesFilmDbStorage") LikesFilmStorage likesFilmStorage) {
         this.filmStorage = filmStorage;
+        this.likesFilmStorage = likesFilmStorage;
     }
 
 
@@ -55,17 +59,13 @@ public class FilmService {
 
     public void addLike(int idFilm, int idUser) {
         log.info(format("Start add like idUser = [%s] to idFilm = [%s]", idUser, idFilm));
-        Film film = getFilm(idFilm);
-        film.addLike(idUser);
-        updateFilm(film);
+        likesFilmStorage.addLike(idFilm, idUser);
         log.info(format("Like added to idFilm = [%s]", idFilm));
     }
 
     public void deleteLike(int idFilm, int idUser) {
         log.info(format("Start delete like idUser = [%s] from idFilm = [%s]", idUser, idFilm));
-        Film film = getFilm(idFilm);
-        film.deleteLike(idUser);
-        updateFilm(film);
+        likesFilmStorage.deleteLike(idFilm, idUser);
         log.info(format("Like was delete to idFilm = [%s]", idFilm));
     }
 
@@ -78,10 +78,7 @@ public class FilmService {
      */
     public List<Film> getPopularFilms(int count) {
         log.info(format("Start get popular films count = [%s]", count));
-        return getAllFilms().stream()
-                .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
-                .limit(count)
-                .collect(Collectors.toList());
+        return likesFilmStorage.getPopularFilms(count);
     }
 
 }

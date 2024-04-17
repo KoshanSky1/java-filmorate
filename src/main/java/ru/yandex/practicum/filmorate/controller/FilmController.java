@@ -28,7 +28,7 @@ public class FilmController {
 
     private final FilmService filmService;
 
-    FilmController(FilmService filmService) {
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
     }
 

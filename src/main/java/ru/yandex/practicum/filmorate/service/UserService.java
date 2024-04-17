@@ -1,11 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -17,12 +18,14 @@ public class UserService {
     private final UserStorage userStorage;
 
 
-    public UserService(UserStorage userStorage) {
+    @Autowired
+    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
 
     public User createUser(User user) {
+        log.info(format("Create user: %s", user));
         return userStorage.createUser(user);
     }
 
@@ -47,10 +50,7 @@ public class UserService {
         log.info(format("Start add idFriend = [%s] to idUser = [%s] friends", idFriend, idUser));
         User user = getUser(idUser);
         User friend = getUser(idFriend);
-        user.addFriend(friend.getId());
-        friend.addFriend(user.getId());
-        updateUser(user);
-        updateUser(friend);
+        userStorage.addFriend(user.getId(), friend.getId());
         log.info(format("Success add idFriend = [%s] to idUser = [%s] friends", idFriend, idUser));
     }
 
@@ -58,10 +58,7 @@ public class UserService {
         log.info(format("Start delete idFriend = [%s] from idUser = [%s] friends", idFriend, idUser));
         User user = getUser(idUser);
         User friend = getUser(idFriend);
-        user.deleteFriend(idFriend);
-        friend.deleteFriend(idUser);
-        updateUser(user);
-        updateUser(friend);
+        userStorage.deleteFriend(user.getId(), friend.getId());
         log.info(format("Success delete idFriend = [%s] from idUser = [%s] friends", idFriend, idUser));
     }
 
@@ -69,24 +66,14 @@ public class UserService {
         log.info(format("Start find common friend idUser = [%s] and idFriend = [%s]", idUser, idFriend));
         User user = getUser(idUser);
         User friend = getUser(idFriend);
-        List<User> commonFriends = new ArrayList<>();
-        for (Integer id : user.getFriends()) {
-            if (friend.getFriends().contains(id)) {
-                commonFriends.add(getUser(id));
-            }
-        }
-        log.info(format("Common friends list size: " + commonFriends.size()));
-        return commonFriends;
+        log.info(format("Common friends list size: " + userStorage.getCommonFriends(user.getId(), friend.getId()).size()));
+        return userStorage.getCommonFriends(idUser, idFriend);
     }
 
     public List<User> getFriends(int idUser) {
         log.info(format("Start get idUser = [%s] friends", idUser));
         User user = getUser(idUser);
-        List<User> friends = new ArrayList<>();
-        for (Integer id : user.getFriends()) {
-            friends.add(getUser(id));
-        }
-        log.info("Friend list size: " + friends.size());
-        return friends;
+        log.info("Friend list size: " + userStorage.getFriends(user.getId()).size());
+        return userStorage.getFriends(idUser);
     }
 }
