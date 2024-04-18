@@ -11,7 +11,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import java.util.*;
 
 @Service
-public class InMemoryFilmService implements FilmService{
+public class InMemoryFilmService implements FilmService {
     private final FilmStorage filmStorage;
 
     @Autowired
