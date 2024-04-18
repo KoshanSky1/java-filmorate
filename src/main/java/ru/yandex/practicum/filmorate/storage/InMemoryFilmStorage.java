@@ -3,10 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -22,6 +19,7 @@ import static java.util.Calendar.DECEMBER;
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
     private final UserStorage userStorage = new InMemoryUserStorage();
+
     @Getter
     private final Map<Integer, Film> films = new HashMap<>();
     private final LocalDate movieBirthday = LocalDate.of(1895, DECEMBER, 28);
@@ -111,16 +109,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public void addLike(Integer id, Integer userId) {
-        User user = userStorage.getUsers().get(userId);
+        User user = userStorage.findUserById(userId);
         Film film = getFilms().get(id);
-        if (user == null) {
-            log.debug(String.format("Пользователь № %d не найден", userId));
-            throw new UserNotFoundException(String.format("Пользователь № %d не найден", userId));
-        }
-        if (film == null) {
-            log.debug(String.format("Фильм № %d не найден", id));
-            throw new FilmNotFoundException(String.format("Фильм № %d не найден", id));
-        }
         int likes;
         int sizeOfListOfFilm = user.getFilms().size();
         user.getFilms().add(film.getId());
@@ -139,14 +129,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void deleteLike(Integer id, Integer userId) {
         User user = userStorage.getUsers().get(userId);
         Film film = getFilms().get(id);
-        if (user == null) {
-            log.debug(String.format("Пользователь № %d не найден", userId));
-            throw new UserNotFoundException(String.format("Пользователь № %d не найден", userId));
-        }
-        if (film == null) {
-            log.debug(String.format("Фильм № %d не найден", id));
-            throw new FilmNotFoundException(String.format("Фильм № %d не найден", id));
-        }
         if (user.getFilms().contains(id)) {
             user.getFilms().remove(id);
             film.setLikes(film.getLikes() - 1);
@@ -178,22 +160,172 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public List<Genre> getAllGenres() {
-        return null;
+        List<Genre> genres = new ArrayList<>();
+        Genre genreNumberOne = Genre.builder()
+                .id(1)
+                .name("Комедия")
+                .build();
+
+        Genre genreNumberTwo = Genre.builder()
+                .id(2)
+                .name("Драма")
+                .build();
+
+        Genre genreNumberThree = Genre.builder()
+                .id(3)
+                .name("Мультфильм")
+                .build();
+
+        Genre genreNumberFour = Genre.builder()
+                .id(4)
+                .name("Триллер")
+                .build();
+
+        Genre genreNumberFive = Genre.builder()
+                .id(5)
+                .name("Документальный")
+                .build();
+
+        Genre genreNumberSix = Genre.builder()
+                .id(6)
+                .name("Боевик")
+                .build();
+
+        genres.add(genreNumberOne);
+        genres.add(genreNumberTwo);
+        genres.add(genreNumberThree);
+        genres.add(genreNumberFour);
+        genres.add(genreNumberFive);
+        genres.add(genreNumberSix);
+
+        return genres;
     }
 
     @Override
     public Genre findGenreById(Integer id) {
-        return null;
+        Genre genreNumberOne = Genre.builder()
+                .id(1)
+                .name("Комедия")
+                .build();
+
+        Genre genreNumberTwo = Genre.builder()
+                .id(2)
+                .name("Драма")
+                .build();
+
+        Genre genreNumberThree = Genre.builder()
+                .id(3)
+                .name("Мультфильм")
+                .build();
+
+        Genre genreNumberFour = Genre.builder()
+                .id(4)
+                .name("Триллер")
+                .build();
+
+        Genre genreNumberFive = Genre.builder()
+                .id(5)
+                .name("Документальный")
+                .build();
+
+        Genre genreNumberSix = Genre.builder()
+                .id(6)
+                .name("Боевик")
+                .build();
+
+        switch (id) {
+            case 1:
+                return genreNumberOne;
+            case 2:
+                return genreNumberTwo;
+            case 3:
+                return genreNumberThree;
+            case 4:
+                return genreNumberFour;
+            case 5:
+                return genreNumberFive;
+            case 6:
+                return genreNumberSix;
+            default:
+                throw new GenreNotFoundException("Жанр с id=" + id + " не существует.");
+        }
     }
 
     @Override
     public List<Mpa> getAllRatings() {
-        return null;
+        List<Mpa> rating = new ArrayList<>();
+        Mpa mpaNumberOne = Mpa.builder()
+                .id(1)
+                .name("G")
+                .build();
+
+        Mpa mpaNumberTwo = Mpa.builder()
+                .id(2)
+                .name("PG")
+                .build();
+
+        Mpa mpaNumberThree = Mpa.builder()
+                .id(3)
+                .name("PG-13")
+                .build();
+
+        Mpa mpaNumberFour = Mpa.builder()
+                .id(4)
+                .name("R")
+                .build();
+
+        Mpa mpaNumberFive = Mpa.builder()
+                .id(5)
+                .name("NC-17")
+                .build();
+        rating.add(mpaNumberOne);
+        rating.add(mpaNumberTwo);
+        rating.add(mpaNumberThree);
+        rating.add(mpaNumberFour);
+        rating.add(mpaNumberFive);
+
+        return rating;
     }
 
     @Override
     public Mpa findRatingById(Integer id) {
-        return null;
+            Mpa mpaNumberOne = Mpa.builder()
+                    .id(1)
+                    .name("G")
+                    .build();
+
+            Mpa mpaNumberTwo = Mpa.builder()
+                    .id(2)
+                    .name("PG")
+                    .build();
+
+            Mpa mpaNumberThree = Mpa.builder()
+                    .id(3)
+                    .name("PG-13")
+                    .build();
+
+            Mpa mpaNumberFour = Mpa.builder()
+                    .id(4)
+                    .name("R")
+                    .build();
+
+            Mpa mpaNumberFive = Mpa.builder()
+                    .id(5)
+                    .name("NC-17")
+                    .build();
+            switch (id) {
+            case 1:
+                return mpaNumberOne;
+            case 2:
+                return mpaNumberTwo;
+            case 3:
+                return mpaNumberThree;
+            case 4:
+                return mpaNumberFour;
+            case 5:
+            default:
+                throw new RatingNotFoundException("Рейтинг с id=" + id + " не существует.");
+        }
     }
 
 }

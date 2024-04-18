@@ -52,6 +52,7 @@ public class InMemoryUserStorage implements  UserStorage {
 
     @Override
     public User put(User user) {
+        findUserById(user.getId());
         if (!users.containsKey(user.getId())) {
             log.debug("Обновление невозможно: пользователь не найден");
             throw new ValidationException("Пользователь не найден.");
@@ -79,7 +80,7 @@ public class InMemoryUserStorage implements  UserStorage {
     @Override
     public void delete(User user) {
         if (users.containsValue(user)) {
-            log.debug("Пользователь " + user.getId() + " успешно удалён");
+            log.info("Пользователь " + user.getId() + " успешно удалён");
         } else {
             log.debug("Пользователь не найден");
             throw new ValidationException("Пользователь " + user.getId() + " не найден");
@@ -95,18 +96,9 @@ public class InMemoryUserStorage implements  UserStorage {
 
     @Override
     public void addAFriend(Integer id, Integer friendId) {
-        User user = getUsers().get(id);
-        User friend = getUsers().get(friendId);
-        if (user == null) {
-            log.debug(String.format("Пользователь № %d не найден", id));
-            throw new UserNotFoundException(String.format("Пользователь № %d не найден", id));
-        }
-        if (friend == null) {
-            log.debug(String.format("Пользователь № %d не найден", friendId));
-            throw new UserNotFoundException(String.format("Пользователь № %d не найден", friendId));
-        }
+        User user = findUserById(id);
+        User friend = findUserById(friendId);
         user.getFriends().add(friendId);
-        friend.getFriends().add(id);
         log.info("Пользователь №" + id + " добавил в друзья пользователя №" + friendId);
     }
 
@@ -128,19 +120,16 @@ public class InMemoryUserStorage implements  UserStorage {
 
     @Override
     public void deleteFriend(Integer id, Integer friendId) {
-        User user = getUsers().get(id);
-        User friend = getUsers().get(friendId);
-        if (user == null) {
-            log.debug(String.format("Пользователь № %d не найден", id));
-            throw new UserNotFoundException(String.format("Пользователь № %d не найден", id));
-        }
-        if (friend == null) {
-            log.debug(String.format("Пользователь № %d не найден", friendId));
-            throw new UserNotFoundException(String.format("Пользователь № %d не найден", friendId));
-        }
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(id);
-        log.info("Пользователь №" + id + " удалил удалил друга №" + friendId);
+        User user = findUserById(id);
+        User friend = findUserById(friendId);
+        List<User> friends = getFriendsList(id);
+            if (friends.contains(friendId)) {
+                user.getFriends().remove(friendId);
+                log.info("Пользователь №" + id + " удалил удалил друга №" + friendId);
+            } else {
+                log.debug("Пользователь №" + friendId + " не найден в списке друзей пользователя №" + id);
+                return;
+            }
     }
 
     @Override
@@ -148,14 +137,6 @@ public class InMemoryUserStorage implements  UserStorage {
         User user = getUsers().get(id);
         User otherUser = getUsers().get(otherId);
         List<User> commonFriends = new ArrayList<>();
-        if (user == null) {
-            log.debug(String.format("Пользователь № %d не найден", id));
-            throw new UserNotFoundException(String.format("Пользователь № %d не найден", id));
-        }
-        if (otherUser == null) {
-            log.debug(String.format("Пользователь № %d не найден", otherId));
-            throw new UserNotFoundException(String.format("Пользователь № %d не найден", otherId));
-        }
         for (Integer userId : getUsers().get(id).getFriends()) {
             if (getUsers().get(otherId).getFriends().contains(userId)) {
                 commonFriends.add(getUsers().get(userId));

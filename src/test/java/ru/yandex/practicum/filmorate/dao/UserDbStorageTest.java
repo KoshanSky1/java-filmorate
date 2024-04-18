@@ -19,7 +19,7 @@ class UserDbStorageTest {
     private final JdbcTemplate jdbcTemplate;
 
     @Test
-    void findAll() {
+    public void findAll() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -51,7 +51,7 @@ class UserDbStorageTest {
     }
 
     @Test
-    void create() {
+    public void create() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -71,7 +71,7 @@ class UserDbStorageTest {
     }
 
     @Test
-    void put() {
+    public void put() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -100,7 +100,7 @@ class UserDbStorageTest {
     }
 
     @Test
-    void delete() {
+    public void delete() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -134,7 +134,7 @@ class UserDbStorageTest {
     }
 
     @Test
-    void findUserById() {
+    public void findUserById() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -154,7 +154,7 @@ class UserDbStorageTest {
     }
 
     @Test
-    void addAFriend() {
+    public void addAFriend() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -185,7 +185,7 @@ class UserDbStorageTest {
     }
 
     @Test
-    void getFriendsList() {
+    public void getFriendsList() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -218,7 +218,6 @@ class UserDbStorageTest {
         friendsExpected.add(userNumberOne);
         friendsExpected.add(userNumberThree);
 
-       // System.out.println(userDbStorage.getFriendsList(userNumberTwo.getId()));
         List<User> friendsActual = userDbStorage.getFriendsList(userNumberTwo.getId());
 
         assertThat(friendsActual)
@@ -228,7 +227,7 @@ class UserDbStorageTest {
     }
 
     @Test
-    void deleteFriend() {
+    public void deleteFriend() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -273,7 +272,7 @@ class UserDbStorageTest {
     }
 
     @Test
-    void displayAListOfCommonFriends() {
+    public void displayAListOfCommonFriends() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")

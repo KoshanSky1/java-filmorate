@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,7 @@ public class RatingController {
     private final FilmService filmService;
 
     @Autowired
-    public RatingController(FilmService filmService) {
+    public RatingController(@Qualifier("filmDbService") FilmService filmService) {
         this.filmService = filmService;
     }
 

@@ -22,7 +22,7 @@ class FilmDbStorageTest {
     private final JdbcTemplate jdbcTemplate;
 
     @Test
-    void findAll() {
+    public void findAll() {
         Mpa mpaNumberOne = Mpa.builder()
                 .id(3)
                 .name("PG-13")
@@ -84,7 +84,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void findFilmById() {
+    public void findFilmById() {
         Mpa mpa = Mpa.builder()
                 .id(1)
                 .name("G")
@@ -119,7 +119,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void create() {
+    public void create() {
         Mpa mpa = Mpa.builder()
                 .id(4)
                 .name("R")
@@ -154,7 +154,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void put() {
+    public void put() {
         Mpa mpa = Mpa.builder()
                 .id(4)
                 .name("R")
@@ -201,7 +201,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void delete() {
+    public void delete() {
         Mpa mpaNumberOne = Mpa.builder()
                 .id(3)
                 .name("PG-13")
@@ -265,7 +265,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void addLike() {
+    public void addLike() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -336,7 +336,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void deleteLike() {
+    public void deleteLike() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -410,7 +410,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void displayPopularFilms() {
+    public void displayPopularFilms() {
         User userNumberOne = User.builder()
                 .email("test@mail.ru")
                 .login("test")
@@ -499,7 +499,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void getAllGenres() {
+    public void getAllGenres() {
         Genre genreNumberOne = Genre.builder()
                 .id(1)
                 .name("Комедия")
@@ -548,7 +548,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void findGenreById() {
+    public void findGenreById() {
         Genre genreNumberFour = Genre.builder()
                 .id(4)
                 .name("Триллер")
@@ -564,7 +564,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void getAllRatings() {
+    public void getAllRatings() {
         Mpa mpaNumberOne = Mpa.builder()
                 .id(1)
                 .name("G")
@@ -607,7 +607,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void findRatingById() {
+    public void findRatingById() {
         Mpa mpaNumberFour = Mpa.builder()
                 .id(4)
                 .name("R")

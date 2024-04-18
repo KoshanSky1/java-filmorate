@@ -72,7 +72,7 @@ public class UserDbStorage implements UserStorage {
             log.info("Найден пользователь: {} {}", userRows.getString("user_id"), userRows.getString("user_login"));
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, userId);
         } else {
-            log.info("Пользователь с идентификатором {} не найден.", userId);
+            log.debug("Пользователь с идентификатором {} не найден.", userId);
             throw new UserNotFoundException("Пользователь с идентификатором " + userId + "не найден.");
         }
     }

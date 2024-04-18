@@ -26,4 +26,5 @@ public interface UserStorage {
     void deleteFriend(Integer id, Integer friendId);
 
     List<User> displayAListOfCommonFriends(Integer id, Integer otherId);
+
 }

@@ -45,7 +45,7 @@ public class FilmDbStorage implements FilmStorage {
             log.info("Найден фильм: {} {}", filmRows.getString("film_id"), filmRows.getString("film_name"));
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, filmId);
         } else {
-            log.info("Фильм с идентификатором {} не найден.", filmId);
+            log.debug("Фильм с идентификатором {} не найден.", filmId);
             throw new FilmNotFoundException("Фильм с идентификатором " + filmId + "не найден.");
         }
     }
@@ -141,7 +141,7 @@ public class FilmDbStorage implements FilmStorage {
                 + "ORDER BY count DESC "
                 + "LIMIT "
                 + count;
-        log.debug("Сформирован список " + count + " наиболее популярных фильмов.");
+        log.info("Сформирован список " + count + " наиболее популярных фильмов.");
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
     }
 
@@ -153,7 +153,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Genre> getAllGenres() {
         String sqlQuery = "SELECT * FROM genres";
-        log.debug("Сформирован список всех жанров.");
+        log.info("Сформирован список всех жанров.");
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
     }
 
@@ -165,7 +165,7 @@ public class FilmDbStorage implements FilmStorage {
             log.info("Жанр с идентификатором {} найден.", id);
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToGenre, id);
         } else {
-            log.info("Жанр с идентификатором {} не найден.", id);
+            log.debug("Жанр с идентификатором {} не найден.", id);
             throw new GenreNotFoundException("Жанр с идентификатором " + id + "не найден.");
         }
     }
@@ -173,7 +173,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Mpa> getAllRatings() {
         String sqlQuery = "SELECT * FROM rating";
-        log.debug("Сформирован список всех рейтингов.");
+        log.info("Сформирован список всех рейтингов.");
         return jdbcTemplate.query(sqlQuery, this::mapRowToRating);
     }
 
@@ -185,7 +185,7 @@ public class FilmDbStorage implements FilmStorage {
             log.info("Рейтинг с идентификатором {} найден.", id);
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToRating, id);
         } else {
-            log.info("Рейтинг с идентификатором {} не найден.", id);
+            log.debug("Рейтинг с идентификатором {} не найден.", id);
             throw new RatingNotFoundException("Рейтинг с идентификатором " + id + "не найден.");
         }
 

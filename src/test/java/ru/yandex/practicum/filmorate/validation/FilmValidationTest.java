@@ -6,8 +6,8 @@ import org.junit.jupiter.api.function.Executable;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.InMemoryFilmService;
+import ru.yandex.practicum.filmorate.service.InMemoryUserService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class FilmValidationTest {
     private final InMemoryFilmStorage filmStorage = new InMemoryFilmStorage();
     private final InMemoryUserStorage userStorage = new InMemoryUserStorage();
-    private final UserService userService = new UserService(userStorage);
-    private final FilmService filmService = new FilmService(filmStorage);
+    private final InMemoryUserService userService = new InMemoryUserService(userStorage);
+    private final InMemoryFilmService filmService = new InMemoryFilmService(filmStorage);
     private final FilmController filmController = new FilmController(filmService);
     private final Film filmNumberOne = Film.builder()
             .name("Титаник")
@@ -36,7 +36,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void create() {
+    public void create() {
         final Collection<Film> films = filmController.findAll();
 
         assertNotNull(filmNumberOne, "Фильм не найден.");;
@@ -46,7 +46,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void createAnExistingFilm() {
+    public void createAnExistingFilm() {
         final ValidationException exception = assertThrows(
                 ValidationException.class,
                 new Executable() {
@@ -62,7 +62,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void createWithEmptyFilmName() {
+    public void createWithEmptyFilmName() {
         Film testFilm = Film.builder()
                 .name("   ")
                 .description("Test description")
@@ -85,7 +85,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void createWithADescriptionExceeding200Characters() {
+    public void createWithADescriptionExceeding200Characters() {
         Film testFilm = Film.builder()
                 .name("Test")
                 .description("TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest" +
@@ -110,7 +110,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void createWithAReleaseDateFromThePast() {
+    public void createWithAReleaseDateFromThePast() {
         Film testFilm = Film.builder()
                 .name("Test")
                 .description("Test description")
@@ -133,7 +133,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void createWithNegativeDuration() {
+    public void createWithNegativeDuration() {
         Film testFilm = Film.builder()
                 .name("Test")
                 .description("Test description")
@@ -156,7 +156,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void put() {
+    public void put() {
         Film updatedFilm = Film.builder()
                 .name("Титаник")
                 .description("Американская эпическая романтическая драма и фильм катастрофа")
@@ -176,7 +176,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void putWithNonExistentId() {
+    public void putWithNonExistentId() {
         Film updatedFilm = Film.builder()
                 .name("Титаник")
                 .description("Американская эпическая романтическая драма и фильм катастрофа")
@@ -201,7 +201,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void putWithEmptyFilmName() {
+    public void putWithEmptyFilmName() {
         Film testFilm = Film.builder()
                 .name("   ")
                 .description("Test description")
@@ -226,7 +226,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void putWithADescriptionExceeding200Characters() {
+    public void putWithADescriptionExceeding200Characters() {
         Film testFilm = Film.builder()
                 .name("Test")
                 .description("TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest" +
@@ -253,7 +253,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void putWithAReleaseDateFromThePast() {
+    public void putWithAReleaseDateFromThePast() {
         Film testFilm = Film.builder()
                 .name("Test")
                 .description("Test description")
@@ -278,7 +278,7 @@ class FilmValidationTest {
     }
 
     @Test
-    void putWithNegativeDuration() {
+    public void putWithNegativeDuration() {
         Film testFilm = Film.builder()
                 .name("Test")
                 .description("Test description")

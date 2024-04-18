@@ -1,74 +1,35 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
-@Service
-public class FilmService {
-    private final FilmStorage filmStorage;
+public interface FilmService {
+    Collection<Film> findAll();
 
-    @Autowired
-    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
-        this.filmStorage = filmStorage;
-    }
+    Film findFilmById(Integer filmId);
 
-    public Collection<Film> findAll() {
-        return filmStorage.findAll();
-    }
+    Film create(Film film);
 
-    public Film findFilmById(Integer filmId) {
-        return filmStorage.findFilmById(filmId);
-    }
+    Film put(Film film);
 
-    public Film create(Film film) {
-        return filmStorage.create(film);
-    }
+    void delete(Film film);
 
-    public Film put(Film film) {
-        return filmStorage.put(film);
-    }
+    void addLike(Integer id, Integer userId);
 
-    public void delete(Film film) {
-        filmStorage.delete(film);
-    }
+    void deleteLike(Integer id, Integer userId);
 
-    public void addLike(Integer id, Integer userId) {
-        filmStorage.addLike(id, userId);
-    }
+    List<Film> displayPopularFilms(Integer count);
 
-    public void deleteLike(Integer id, Integer userId) {
-        filmStorage.deleteLike(id, userId);
-    }
+    List<Genre> getAllGenres();
 
-    public List<Film> displayPopularFilms(Integer count) {
-        return filmStorage.displayPopularFilms(count);
-    }
+    Genre findGenreById(Integer id);
 
-    public List<Genre> getAllGenres() {
-        return filmStorage.getAllGenres();
-    }
+    List<Mpa> getAllRatings();
 
-    public Genre findGenreById(Integer id) {
-        return filmStorage.findGenreById(id);
-    }
-
-    public List<Mpa> getAllRatings() {
-        return filmStorage.getAllRatings();
-    }
-
-    public Mpa findRatingById(Integer id) {
-        return filmStorage.findRatingById(id);
-    }
-
-    public Map<Integer, Film> getFilms() {
-        return filmStorage.getFilms();
-    }
+    Mpa findRatingById(Integer id);
 
 }

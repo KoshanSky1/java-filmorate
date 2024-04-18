@@ -34,4 +34,5 @@ public interface FilmStorage {
     List<Mpa> getAllRatings();
 
     Mpa findRatingById(Integer id);
+
 }
