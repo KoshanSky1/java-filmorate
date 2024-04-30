@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
@@ -16,11 +18,14 @@ import static java.lang.String.format;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final FilmStorage filmStorage;
 
 
     @Autowired
-    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage) {
+    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage,
+                       @Qualifier("FilmDbStorage") FilmStorage filmStorage) {
         this.userStorage = userStorage;
+        this.filmStorage = filmStorage;
     }
 
 
@@ -75,5 +80,11 @@ public class UserService {
         User user = getUser(idUser);
         log.info("Friend list size: " + userStorage.getFriends(user.getId()).size());
         return userStorage.getFriends(idUser);
+    }
+
+    public List<Film> getRecommendations(int idUser) {
+        log.info(format("Start get film's recommendations for idUser = [%s]", idUser));
+        User user = getUser(idUser);
+        return filmStorage.getRecommendations(user.getId());
     }
 }

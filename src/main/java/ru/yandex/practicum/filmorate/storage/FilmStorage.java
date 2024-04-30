@@ -14,4 +14,7 @@ public interface FilmStorage {
     Film updateFilm(Film film);
 
     boolean deleteFilm(int idFilm);
+
+    List<Film> getRecommendations(int idUser);
+
 }

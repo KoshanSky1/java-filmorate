@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exeption.ErrorResponse;
 import ru.yandex.practicum.filmorate.json.SuccessJSON;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -103,6 +104,12 @@ public class UserController {
     public ResponseEntity<List<User>> findFriends(@NonNull @PathVariable int idUser) {
         log.info("---START FIND FRIENDS ENDPOINT---");
         return new ResponseEntity<>(userService.getFriends(idUser), HttpStatus.OK);
+    }
 
+    @SneakyThrows
+    @GetMapping("/{idUser}/recommendations")
+    public ResponseEntity<List<Film>> findRecommendations(@NonNull @PathVariable int idUser) {
+        log.info("---START FIND RECOMMENDATIONS FILMS ENDPOINT---");
+        return new ResponseEntity<>(userService.getRecommendations(idUser), HttpStatus.OK);
     }
 }
