@@ -25,9 +25,16 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({FilmNotFoundException.class,
             UserNotFoundException.class,
             MpaNotFoundException.class,
-            GenreNotFoundException.class})
+            GenreNotFoundException.class,
+            ReviewNotFoundException.class,})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final RuntimeException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(ReviewCreateException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleReviewCreateException(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 
