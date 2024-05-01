@@ -83,9 +83,9 @@ public class FilmService {
      * @param count количества
      * @return список фильмов
      */
-    public List<Film> getPopularFilms(int count) {
-        log.info(format("Start get popular films count = [%s]", count));
-        return likesFilmStorage.getPopularFilms(count);
+    public List<Film> getPopularFilms(int count, Integer genreId, Integer year) {
+        log.info(format("Start get popular films count = [%s], genreId = [%s], year = [%s]", count, genreId, year));
+        return likesFilmStorage.getPopularFilms(count, genreId, year);
     }
 
     /**

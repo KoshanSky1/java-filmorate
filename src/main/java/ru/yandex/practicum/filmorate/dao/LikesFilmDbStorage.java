@@ -6,6 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
+import org.springframework.lang.Nullable;
 import ru.yandex.practicum.filmorate.model.feed.Event;
 import ru.yandex.practicum.filmorate.model.feed.EventType;
 import ru.yandex.practicum.filmorate.model.feed.Operation;
@@ -16,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,21 +72,26 @@ public class LikesFilmDbStorage implements LikesFilmStorage {
     }
 
     @Override
-    public List<Film> getPopularFilms(Integer count) {
+    public List<Film> getPopularFilms(Integer count, @Nullable Integer genreId, @Nullable Integer year) {
+        List<String> params = new ArrayList<>();
         if (count == null) {
             count = 10;
         }
 
-        String sql =
-                "select f.*, COUNT(l.U01_ID) " +
-                        "from F01_FILM as f " +
-                        "left outer join L01_LIKES_FILM as l " +
-                        "on l.F01_ID = f.F01_ID " +
-                        "group by f.F01_ID " +
-                        "order by COUNT(l.U01_ID) desc " +
-                        "limit ?";
+        if (genreId != null) params.add(String.format("fg.G01_ID = %s", genreId));
+        if (year != null) params.add(String.format("YEAR(F01_RELEASE_DATE) = %s", year));
 
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), count);
+        String sql =
+                "SELECT f.*, COUNT(l.U01_ID) " +
+                        "FROM F01_FILM as f " +
+                        "LEFT JOIN L01_LIKES_FILM AS l ON l.F01_ID = f.F01_ID " +
+                        "LEFT JOIN F02_FILM_GENRE AS fg on fg.F01_ID = f.F01_ID %s " +
+                        "GROUP BY f.F01_ID " +
+                        "ORDER BY COUNT(l.U01_ID) DESC " +
+                        "LIMIT ?";
+
+        String sqlParams = params.isEmpty() ? "" : "WHERE ".concat(String.join(" AND ", params));
+        return jdbcTemplate.query(String.format(sql, sqlParams), (rs, rowNum) -> makeFilm(rs), count);
     }
 
 
