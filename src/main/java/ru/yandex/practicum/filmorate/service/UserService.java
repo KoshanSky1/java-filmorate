@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.feed.Event;
+import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -19,13 +21,16 @@ public class UserService {
 
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
+    private final FeedStorage feedStorage;
 
 
     @Autowired
     public UserService(@Qualifier("UserDbStorage") UserStorage userStorage,
-                       @Qualifier("FilmDbStorage") FilmStorage filmStorage) {
+                       @Qualifier("FilmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("FeedDbStorage") FeedStorage feedStorage) {
         this.userStorage = userStorage;
         this.filmStorage = filmStorage;
+        this.feedStorage = feedStorage;
     }
 
 
@@ -86,5 +91,11 @@ public class UserService {
         log.info(format("Start get film's recommendations for idUser = [%s]", idUser));
         User user = getUser(idUser);
         return filmStorage.getRecommendations(user.getId());
+    }
+
+    public List<Event> getFeed(int idUser) {
+        log.info(format("Start get film's recommendations for idUser = [%s]", idUser));
+        User user = getUser(idUser);
+        return feedStorage.getFeed(user.getId());
     }
 }

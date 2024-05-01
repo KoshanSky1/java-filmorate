@@ -18,6 +18,7 @@ import ru.yandex.practicum.filmorate.exeption.ErrorResponse;
 import ru.yandex.practicum.filmorate.json.SuccessJSON;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.feed.Event;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
@@ -111,5 +112,12 @@ public class UserController {
     public ResponseEntity<List<Film>> findRecommendations(@NonNull @PathVariable int idUser) {
         log.info("---START FIND RECOMMENDATIONS FILMS ENDPOINT---");
         return new ResponseEntity<>(userService.getRecommendations(idUser), HttpStatus.OK);
+    }
+
+    @SneakyThrows
+    @GetMapping("/{idUser}/feed")
+    public ResponseEntity<List<Event>> getFeed(@NonNull @PathVariable int idUser) {
+        log.info("---START FIND FEED ENDPOINT---");
+        return new ResponseEntity<>(userService.getFeed(idUser), HttpStatus.OK);
     }
 }
