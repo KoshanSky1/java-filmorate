@@ -13,6 +13,9 @@ import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.feed.Event;
+import ru.yandex.practicum.filmorate.model.feed.EventType;
+import ru.yandex.practicum.filmorate.model.feed.Operation;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.ReviewsStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -21,6 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +37,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
     private final JdbcTemplate jdbcTemplate;
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final FeedDbStorage feedDbStorage;
 
     @Override
     public List<Review> getAllReviewsByFilmId(int filmId, int count) {
@@ -85,33 +90,51 @@ public class ReviewsDbStorage implements ReviewsStorage {
             throw new ReviewCreateException(e.getMessage());
         }
         int id = Objects.requireNonNull(keyHolder.getKey()).intValue();
+        feedDbStorage.addEvent(Event.builder()
+                .timestamp(Instant.now().toEpochMilli())
+                .userId(user.getId())
+                .entityId(id)
+                .eventType(EventType.REVIEW)
+                .operation(Operation.ADD)
+                .build());
         return getReview(id);
     }
 
     @Override
-    public Review updateReview(Review review) {
-        String sql =
-                "update R01_REVIEWS set " +
-                        "R01_CONTENT = ?, R01_IS_POSITIVE = ?, " +
-                        "R01_USEFUL = ?" +
-                        "where R01_ID = ?";
-        jdbcTemplate.update(sql,
-                review.getContent(),
-                review.getIsPositive(),
-                getLikeCount(review.getReviewId()),
-                review.getReviewId());
-
-        return getReview(review.getReviewId());
+    public Review updateReview(Review changedReview) {
+        var review = getReview(changedReview.getReviewId());
+        review.setIsPositive(changedReview.getIsPositive());
+        review.setContent(changedReview.getContent());
+        changeReview(review);
+        feedDbStorage.addEvent(Event.builder()
+                .timestamp(Instant.now().toEpochMilli())
+                .userId(review.getUserId())
+                .entityId(review.getReviewId())
+                .eventType(EventType.REVIEW)
+                .operation(Operation.UPDATE)
+                .build());
+        return review;
     }
 
     @Override
     public boolean deleteReview(int reviewId) {
+        var review = getReview(reviewId);
         String sqlQuery =
                 "delete " +
                         "from R01_REVIEWS " +
                         "where R01_ID = ?";
 
-        return jdbcTemplate.update(sqlQuery, reviewId) > 0;
+        var isDeleted = jdbcTemplate.update(sqlQuery, reviewId) > 0;
+        if (isDeleted) {
+            feedDbStorage.addEvent(Event.builder()
+                    .timestamp(Instant.now().toEpochMilli())
+                    .userId(review.getUserId())
+                    .entityId(review.getReviewId())
+                    .eventType(EventType.REVIEW)
+                    .operation(Operation.REMOVE)
+                    .build());
+        }
+        return isDeleted;
     }
 
     @Override
@@ -128,7 +151,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
                 preparedStatement.setInt(3, userId);
                 return preparedStatement;
             }, keyHolder);
-            updateReview(getReview(reviewId));
+            changeReview(getReview(reviewId));
         } catch (Exception e) {
             throw new ValidationException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
@@ -141,7 +164,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
                         "where R01_ID = ? and U01_ID = ? and R02_IS_POSITIVE = ? ";
 
         jdbcTemplate.update(sql, reviewId, userId, isPositive);
-        updateReview(getReview(reviewId));
+        changeReview(getReview(reviewId));
     }
 
     @Override
@@ -153,6 +176,20 @@ public class ReviewsDbStorage implements ReviewsStorage {
         return jdbcTemplate.queryForObject(sql, Integer.class, reviewId);
     }
 
+    private Review changeReview(Review review) {
+        String sql =
+                "update R01_REVIEWS set " +
+                        "R01_CONTENT = ?, R01_IS_POSITIVE = ?, " +
+                        "R01_USEFUL = ?" +
+                        "where R01_ID = ?";
+        jdbcTemplate.update(sql,
+                review.getContent(),
+                review.getIsPositive(),
+                getLikeCount(review.getReviewId()),
+                review.getReviewId());
+
+        return getReview(review.getReviewId());
+    }
 
     private Review makeReview(ResultSet rs) throws SQLException {
         int reviewId = rs.getInt("R01_ID");

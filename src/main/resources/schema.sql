@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS F01_FILM;
 DROP TABLE IF EXISTS G01_GENRE;
 DROP TABLE IF EXISTS M01_MPA;
 DROP TABLE IF EXISTS S01_STATUS_FRIENDS;
+DROP TABLE IF EXISTS F04_FEED;
 DROP TABLE IF EXISTS U01_USER;
 
 
@@ -85,4 +86,14 @@ CREATE TABLE IF NOT EXISTS R02_REVIEWS_LIKES (
                                              U01_ID INTEGER NOT NULL,
                                              FOREIGN KEY (R01_ID) REFERENCES R01_REVIEWS(R01_ID) ON DELETE CASCADE,
                                              FOREIGN KEY (U01_ID) REFERENCES U01_USER(U01_ID) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS F04_FEED (
+                                             F04_ID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                             F04_TIMESTAMP BIGINT NOT NULL,
+                                             U01_ID INTEGER NOT NULL,
+                                             F04_EVENT_TYPE  VARCHAR(20) NOT NULL,
+                                             F04_OPERATION VARCHAR(20) NOT NULL,
+                                             F04_ENTITY_ID INTEGER NOT NULL,
+                                             FOREIGN KEY (U01_ID) REFERENCES U01_USER(U01_ID)
 );

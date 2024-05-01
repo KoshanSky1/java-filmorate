@@ -6,12 +6,16 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.feed.Event;
+import ru.yandex.practicum.filmorate.model.feed.EventType;
+import ru.yandex.practicum.filmorate.model.feed.Operation;
 import ru.yandex.practicum.filmorate.storage.LikesFilmStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +26,7 @@ public class LikesFilmDbStorage implements LikesFilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final GenreDbStorage genreDbStorage;
     private final MpaDbStorage mpaDbStorage;
+    private final FeedDbStorage feedDbStorage;
 
     @Override
     public void addLike(int idFilm, int idUser) {
@@ -38,6 +43,13 @@ public class LikesFilmDbStorage implements LikesFilmStorage {
 
             return preparedStatement;
         }, keyHolder);
+        feedDbStorage.addEvent(Event.builder()
+                .timestamp(Instant.now().toEpochMilli())
+                .userId(idUser)
+                .entityId(idFilm)
+                .eventType(EventType.LIKE)
+                .operation(Operation.ADD)
+                .build());
     }
 
 
@@ -48,6 +60,13 @@ public class LikesFilmDbStorage implements LikesFilmStorage {
                         "where F01_ID = ? and U01_ID = ? ";
 
         jdbcTemplate.update(sql, idFilm, idUser);
+        feedDbStorage.addEvent(Event.builder()
+                .timestamp(Instant.now().toEpochMilli())
+                .userId(idUser)
+                .entityId(idFilm)
+                .eventType(EventType.LIKE)
+                .operation(Operation.REMOVE)
+                .build());
     }
 
     @Override
