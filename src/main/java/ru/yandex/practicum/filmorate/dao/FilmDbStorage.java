@@ -130,6 +130,53 @@ public class FilmDbStorage implements FilmStorage {
     }
 
 
+    /**
+     * Описание запроса:
+     * Подзапрос (1) - Найти id пользователей, с максимальным количеством пересечения по лайкам:
+     * Объединям таблицу L01_LIKES_FILM с самой собой, делаем right join
+     * и оставляем справа только id данного пользователя, слева id всех пользователей, кроме нашего и null.
+     * Получается такая таблица: lf1.U01_ID | F01_ID | lf2.U01_ID
+     * Таким образом в lf1.U01_ID получаются id всех пользователей, которые лайкали такие же фильмы, что и данный.
+     * Группируем пользователей по id, сортируем по частоте этих id
+     * (то есть в начале списка будут пользователи, у которых наиболее совпадают лайки с данным).
+     * Выбираем первых трех из этих пользователей
+     * <p>
+     * Подзапрос (2):
+     * Находим id фильмов, которые лайкнули найденные пользователи
+     * <p>
+     * Подзапрос (3):
+     * Находим id фильмов, которые лайкнул данный пользователь
+     * <p>
+     * Запрос (4):
+     * Находим фильмы c id, которые есть в списке (2), но нет в списке (3).
+     * (То есть те, которые лайкали найденные пользователи, но не лайкал данный)
+     */
+    @Override
+    public List<Film> getRecommendations(int idUser) {
+        String sql =
+                "select * from F01_FILM f " + //(4)
+                        "join M01_MPA m on f.M01_ID = m.M01_ID " +
+                        "where f.F01_ID in (" +
+                        "select F01_ID from L01_LIKES_FILM " + //(2)
+                        "where U01_ID in (" +
+                        "select lf1.U01_ID from L01_LIKES_FILM lf1 " + //(1)
+                        "right join  L01_LIKES_FILM lf2 on lf2.F01_ID = lf1.F01_ID " +
+                        "group by lf1.U01_ID, lf2.U01_ID " +
+                        "having lf1.U01_ID is not null and " +
+                        "lf1.U01_ID != ? and " +
+                        "lf2.U01_ID = ? " +
+                        "order by count(lf1.U01_ID) desc " +
+                        "limit 3 " +
+                        ") " +
+                        "and F01_ID not in ( " +
+                        "select F01_ID from L01_LIKES_FILM " + //(3)
+                        "where U01_ID = ? " +
+                        ")" +
+                        ")";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), idUser, idUser, idUser);
+    }
+
+
     private Film makeFilm(ResultSet resultSet) throws SQLException {
         int idFilm = resultSet.getInt("F01_ID");
         return new Film(

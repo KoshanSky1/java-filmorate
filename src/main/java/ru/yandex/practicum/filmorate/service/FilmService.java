@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.LikesFilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,13 +21,16 @@ import static java.lang.String.format;
 @Service
 public class FilmService {
     private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
     private final LikesFilmStorage likesFilmStorage;
 
     @Autowired
     public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage,
-                       @Qualifier("LikesFilmDbStorage") LikesFilmStorage likesFilmStorage) {
+                       @Qualifier("LikesFilmDbStorage") LikesFilmStorage likesFilmStorage,
+                       @Qualifier("UserDbStorage") UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.likesFilmStorage = likesFilmStorage;
+        this.userStorage = userStorage;
     }
 
 
@@ -65,7 +70,9 @@ public class FilmService {
 
     public void deleteLike(int idFilm, int idUser) {
         log.info(format("Start delete like idUser = [%s] from idFilm = [%s]", idUser, idFilm));
-        likesFilmStorage.deleteLike(idFilm, idUser);
+        Film film = filmStorage.getFilm(idFilm);
+        User user = userStorage.getUser(idUser);
+        likesFilmStorage.deleteLike(film.getId(), user.getId());
         log.info(format("Like was delete to idFilm = [%s]", idFilm));
     }
 
