@@ -49,15 +49,15 @@ CREATE TABLE IF NOT EXISTS L01_LIKES_FILM (
                                                 L01_ID INTEGER   AUTO_INCREMENT NOT NULL PRIMARY KEY,
                                                 F01_ID INTEGER NOT NULL,
                                                 U01_ID INTEGER NOT NULL,
-                                                FOREIGN KEY (F01_ID) REFERENCES F01_FILM(F01_ID),
-                                                FOREIGN KEY (U01_ID) REFERENCES U01_USER(U01_ID)
+                                                FOREIGN KEY (F01_ID) REFERENCES F01_FILM(F01_ID) ON DELETE CASCADE,
+                                                FOREIGN KEY (U01_ID) REFERENCES U01_USER(U01_ID) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS F02_FILM_GENRE (
                                                 F02_ID INTEGER   AUTO_INCREMENT NOT NULL PRIMARY KEY,
                                                 G01_ID INTEGER NOT NULL,
                                                 F01_ID INTEGER NOT NULL,
-                                                FOREIGN KEY (F01_ID) REFERENCES F01_FILM(F01_ID),
+                                                FOREIGN KEY (F01_ID) REFERENCES F01_FILM(F01_ID) ON DELETE CASCADE,
                                                 FOREIGN KEY (G01_ID) REFERENCES G01_GENRE(G01_ID)
 );
 
@@ -67,8 +67,8 @@ CREATE TABLE IF NOT EXISTS F03_FRIENDS (
                                              U01_ID_FRIEND INTEGER NOT NULL,
                                              S01_ID INTEGER NOT NULL,
                                              FOREIGN KEY (S01_ID) REFERENCES S01_STATUS_FRIENDS(S01_ID),
-                                             FOREIGN KEY (U01_ID) REFERENCES U01_USER(U01_ID),
-                                             FOREIGN KEY (U01_ID_FRIEND) REFERENCES U01_USER(U01_ID)
+                                             FOREIGN KEY (U01_ID) REFERENCES U01_USER(U01_ID) ON DELETE CASCADE,
+                                             FOREIGN KEY (U01_ID_FRIEND) REFERENCES U01_USER(U01_ID) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS R01_REVIEWS (
                                              R01_ID INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS R01_REVIEWS (
                                              R01_USEFUL INTEGER NOT NULL,
                                              U01_ID INTEGER NOT NULL,
                                              F01_ID INTEGER NOT NULL,
-                                             FOREIGN KEY (U01_ID) REFERENCES U01_USER(U01_ID),
-                                             FOREIGN KEY (F01_ID) REFERENCES F01_FILM(F01_ID)
+                                             FOREIGN KEY (U01_ID) REFERENCES U01_USER(U01_ID) ON DELETE CASCADE,
+                                             FOREIGN KEY (F01_ID) REFERENCES F01_FILM(F01_ID) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS R02_REVIEWS_LIKES (
                                              R01_ID INTEGER NOT NULL,
@@ -95,5 +95,5 @@ CREATE TABLE IF NOT EXISTS F04_FEED (
                                              F04_EVENT_TYPE  VARCHAR(20) NOT NULL,
                                              F04_OPERATION VARCHAR(20) NOT NULL,
                                              F04_ENTITY_ID INTEGER NOT NULL,
-                                             FOREIGN KEY (U01_ID) REFERENCES U01_USER(U01_ID)
+                                             FOREIGN KEY (U01_ID) REFERENCES U01_USER(U01_ID) ON DELETE CASCADE
 );
