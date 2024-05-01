@@ -88,4 +88,15 @@ public class FilmService {
         return likesFilmStorage.getPopularFilms(count);
     }
 
+    /**
+     * Возвращает список общих фильмов двух пользователей, отсортированных по популярности.
+     *
+     * @param idUser   пользователь
+     * @param idFriend пользователь
+     * @return список фильмов
+     */
+    public List<Film> getCommonFilms(int idUser, int idFriend) {
+        log.info(format("Start get common films idUser = [%s] and idFriend = [%s]", idUser, idFriend));
+        return filmStorage.getCommonFilms(idUser, idFriend);
+    }
 }

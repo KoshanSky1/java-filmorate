@@ -176,6 +176,17 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), idUser, idUser, idUser);
     }
 
+    @Override
+    public List<Film> getCommonFilms(int idUser, int idFriend) {
+        String sql =
+                "select f.* from F01_FILM as f inner join L01_LIKES_FILM as l" +
+                        " on l.F01_ID = f.F01_ID where l.F01_ID in " +
+                        "(select F01_ID from L01_LIKES_FILM " +
+                        "where U01_ID = ? or U01_ID = ? group by F01_ID having count(*) > 1)" +
+                        "group by l.F01_ID order by count(*) desc";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), idUser, idFriend);
+    }
 
     private Film makeFilm(ResultSet resultSet) throws SQLException {
         int idFilm = resultSet.getInt("F01_ID");
