@@ -66,7 +66,7 @@ public class LikesFilmDbStorageTest {
         likesFilmStorage.deleteLike(film3.getId(), user2.getId());
         likesFilmStorage.deleteLike(film3.getId(), user1.getId());
 
-        List<Film> result = likesFilmStorage.getPopularFilms(2);
+        List<Film> result = likesFilmStorage.getPopularFilms(2, null, null);
 
         assertThat(result.get(0), is(film1));
         assertThat(result.get(1), is(film3));
@@ -76,7 +76,7 @@ public class LikesFilmDbStorageTest {
     public void testGetMostLikedFilmsWithLimit() {
         testLikeFilm();
 
-        List<Film> result = likesFilmStorage.getPopularFilms(2);
+        List<Film> result = likesFilmStorage.getPopularFilms(2, null, null);
 
         assertThat(result.get(0), is(film3));
         assertThat(result.get(1), is(film1));

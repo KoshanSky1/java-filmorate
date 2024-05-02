@@ -81,9 +81,11 @@ public class FilmController {
 
     @SneakyThrows
     @GetMapping("/popular")
-    public ResponseEntity<List<Film>> getMostPopularFilms(@RequestParam(defaultValue = "10") int count) {
+    public ResponseEntity<List<Film>> getMostPopularFilms(@RequestParam(value = "count", defaultValue = "10") Integer count,
+                                                          @RequestParam(value = "genreId", required = false) Integer genreId,
+                                                          @RequestParam(value = "year", required = false) Integer year) {
         log.info("---START GET MOST POPULAR FILMS ENDPOINT---");
-        return new ResponseEntity<>(filmService.getPopularFilms(count), HttpStatus.OK);
+        return new ResponseEntity<>(filmService.getPopularFilms(count, genreId, year), HttpStatus.OK);
     }
 
     @SneakyThrows
