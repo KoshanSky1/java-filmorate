@@ -47,7 +47,7 @@ class DirectorDbStorageTest {
     private final Film film3 = new Film(3, "God Father3", "Film about father3",
             LocalDate.now(), 240, mpa, List.of(genre), List.of(director2));
 
-    private final User user1 = new User(1, "test@gmail.com", "testLogin", "Name",
+    private final User user1 = new User(1, "test@gmail.con", "testLogin", "Name",
             LocalDate.of(2000, 1, 1));
 
 
