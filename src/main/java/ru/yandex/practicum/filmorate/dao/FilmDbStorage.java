@@ -197,6 +197,40 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), idUser, idFriend);
     }
 
+    @Override
+    public List<Film> searchFilms(String query, String by) {
+        String[] s = by.split(",");
+
+        String sql;
+        query = "%".concat(query).concat("%");
+        if (s.length == 2) {
+            sql = "SELECT f.* FROM F01_FILM as f " +
+                    "LEFT JOIN L01_LIKES_FILM AS l ON l.F01_ID = f.F01_ID " +
+                    "LEFT JOIN F05_FILM_DIRECTOR AS fd ON fd.F01_ID = f.F01_ID" +
+                    " LEFT JOIN D01_DIRECTOR AS d ON d.D01_ID = fd.D01_ID " +
+                    "WHERE lower(d.D01_NAME) LIKE lower(?) OR lower(f.F01_NAME) LIKE lower(?) " +
+                    "GROUP BY f.F01_ID " +
+                    "ORDER BY COUNT(l.U01_ID) DESC";
+            return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), query, query);
+        } else if (s[0].equals("director")) {
+            sql = "SELECT f.* FROM F01_FILM as f " +
+                    "LEFT JOIN L01_LIKES_FILM AS l ON l.F01_ID = f.F01_ID " +
+                    "LEFT JOIN F05_FILM_DIRECTOR AS fd ON fd.F01_ID = f.F01_ID" +
+                    " LEFT JOIN D01_DIRECTOR AS d ON d.D01_ID = fd.D01_ID " +
+                    "WHERE lower(d.D01_NAME) LIKE lower(?) " +
+                    "GROUP BY f.F01_ID " +
+                    "ORDER BY COUNT(l.U01_ID) DESC";
+            return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), query);
+        } else {
+            sql = "SELECT f.* FROM F01_FILM as f " +
+                    "LEFT JOIN L01_LIKES_FILM AS l ON l.F01_ID = f.F01_ID " +
+                    "WHERE lower(f.F01_NAME) LIKE lower(?) " +
+                    "GROUP BY f.F01_ID " +
+                    "ORDER BY COUNT(l.U01_ID) DESC";
+            return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), query);
+        }
+    }
+
     private Film makeFilm(ResultSet resultSet) throws SQLException {
         int idFilm = resultSet.getInt("F01_ID");
         return new Film(
