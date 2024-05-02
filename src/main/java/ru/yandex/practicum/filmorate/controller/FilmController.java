@@ -93,4 +93,21 @@ public class FilmController {
         log.info("---START GET MOST POPULAR FILMS ENDPOINT---");
         return new ResponseEntity<>(filmService.getPopularFilms(count), HttpStatus.OK);
     }
+
+    @SneakyThrows
+    @GetMapping("/director/{idDirector}")
+    public ResponseEntity<List<Film>> searchFilmsByDirector(@PathVariable("idDirector") int idDirector,
+                                                            @RequestParam(required = false) String sortBy) {
+        if (sortBy.equals("year")) {
+            log.info("---START SEARCH FILMS BY DIRECTOR, SORTED BY YEAR ENDPOINT---");
+             return new ResponseEntity<>(filmService.searchFilmsByDirectorSortedByYear(idDirector), HttpStatus.OK);
+        } else if (sortBy.equals("likes")) {
+            log.info("---START SEARCH FILMS BY DIRECTOR, SORTED BY LIKES ENDPOINT---");
+            return new ResponseEntity<>(filmService.searchFilmsByDirectorSortedByLikes(idDirector), HttpStatus.OK);
+        } else {
+            log.info("---START SEARCH FILMS BY DIRECTOR, NO SORTED ENDPOINT---");
+            return new ResponseEntity<>(filmService.searchFilmsByDirector(idDirector), HttpStatus.OK);
+        }
+    }
+
 }

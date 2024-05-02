@@ -17,7 +17,9 @@ import static java.lang.String.format;
 public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
         ErrorResponse exceptionResponse = new ErrorResponse(format("Validation error. %s", ex.getLocalizedMessage()));
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
@@ -25,7 +27,8 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({FilmNotFoundException.class,
             UserNotFoundException.class,
             MpaNotFoundException.class,
-            GenreNotFoundException.class})
+            GenreNotFoundException.class,
+            DirectorNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());

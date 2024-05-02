@@ -31,6 +31,7 @@ public class FilmDbStorage implements FilmStorage {
     private final GenreDbStorage genreDbStorage;
     private final MpaDbStorage mpaDbStorage;
     private final FilmGenreDbStorage filmGenreDbStorage;
+    private final DirectorDbStorage directorDbStorage;
 
     @Override
     public Film createFilm(Film film) {
@@ -61,6 +62,9 @@ public class FilmDbStorage implements FilmStorage {
 
         List<Genre> filmGenres = filmGenreDbStorage.createFilmGenre(id, film.getGenres());
         film.setGenres(filmGenres);
+
+        directorDbStorage.addDirectorToFilm(id, film.getDirectors());
+        film.setDirectors(directorDbStorage.getFilmDirector(id));
 
         return getFilm(id);
     }
@@ -110,6 +114,10 @@ public class FilmDbStorage implements FilmStorage {
         List<Genre> filmGenres = filmGenreDbStorage.createFilmGenre(film.getId(), film.getGenres());
         film.setGenres(filmGenres);
 
+        directorDbStorage.removeDirectorFromFilm(film.getId());
+        directorDbStorage.addDirectorToFilm(film.getId(), film.getDirectors());
+        film.setDirectors(directorDbStorage.getFilmDirector(film.getId()));
+
         return getFilm(film.getId());
     }
 
@@ -122,6 +130,7 @@ public class FilmDbStorage implements FilmStorage {
                         "where F01_ID = ?";
         try {
             filmGenreDbStorage.deleteFilmGenre(idFilm);
+            directorDbStorage.removeDirectorFromFilm(idFilm);
         } catch (Exception ex) {
             throw new ValidationException(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
         }
@@ -139,6 +148,7 @@ public class FilmDbStorage implements FilmStorage {
                 Objects.requireNonNull(resultSet.getDate("F01_RELEASE_DATE")).toLocalDate(),
                 resultSet.getInt("F01_DURATION"),
                 mpaDbStorage.getMpa(resultSet.getInt("M01_ID")),
-                genreDbStorage.getGenresListForFilm(resultSet.getInt("F01_ID")));
+                genreDbStorage.getGenresListForFilm(resultSet.getInt("F01_ID")),
+                directorDbStorage.getFilmDirector(resultSet.getInt("F01_ID")));
     }
 }

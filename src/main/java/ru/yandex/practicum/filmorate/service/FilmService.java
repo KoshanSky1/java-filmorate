@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.LikesFilmStorage;
 
@@ -21,11 +22,16 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final LikesFilmStorage likesFilmStorage;
 
+    private final DirectorStorage directorStorage;
+
     @Autowired
     public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage,
-                       @Qualifier("LikesFilmDbStorage") LikesFilmStorage likesFilmStorage) {
+                       @Qualifier("LikesFilmDbStorage") LikesFilmStorage likesFilmStorage,
+                       @Qualifier("DirectorDbStorage") DirectorStorage directorStorage
+    ) {
         this.filmStorage = filmStorage;
         this.likesFilmStorage = likesFilmStorage;
+        this.directorStorage = directorStorage;
     }
 
 
@@ -81,4 +87,18 @@ public class FilmService {
         return likesFilmStorage.getPopularFilms(count);
     }
 
+    public List<Film> searchFilmsByDirector(int idDirector) {
+        log.info("Start get films by director, no sorted");
+        return directorStorage.searchFilmsByDirector(idDirector);
+    }
+
+    public List<Film>searchFilmsByDirectorSortedByYear(int idDirector) {
+        log.info("Start get films by director, sorted by year");
+        return directorStorage.searchFilmsByDirectorSortedByYear(idDirector);
+    }
+
+    public List<Film> searchFilmsByDirectorSortedByLikes(int idDirector) {
+        log.info("Start get films by director, sorted by likes");
+        return directorStorage.searchFilmsByDirectorSortedByLikes(idDirector);
+    }
 }
