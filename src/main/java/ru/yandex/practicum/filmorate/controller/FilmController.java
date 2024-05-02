@@ -93,11 +93,4 @@ public class FilmController {
         log.info("---START GET MOST POPULAR FILMS ENDPOINT---");
         return new ResponseEntity<>(filmService.getPopularFilms(count), HttpStatus.OK);
     }
-
-    @SneakyThrows
-    @GetMapping("/common")
-    public ResponseEntity<List<Film>> getCommonFilms(@RequestParam int userId, @RequestParam int friendId) {
-        log.info("---START GET COMMON FILMS ENDPOINT---");
-        return new ResponseEntity<>(filmService.getCommonFilms(userId, friendId), HttpStatus.OK);
-    }
 }
