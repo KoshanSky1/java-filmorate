@@ -86,12 +86,14 @@ public class FilmService {
      * Возвращает список из первых count фильмов по количеству лайков.
      * Если значение параметра count не задано, верните первые 10.
      *
-     * @param count количества
+     * @param count количество
+     * @param genreId айди жанра
+     * @param year год
      * @return список фильмов
      */
-    public List<Film> getPopularFilms(int count) {
-        log.info(format("Start get popular films count = [%s]", count));
-        return likesFilmStorage.getPopularFilms(count);
+    public List<Film> getPopularFilms(int count, Integer genreId, Integer year) {
+        log.info(format("Start get popular films count = [%s], genreId = [%s], year = [%s]", count, genreId, year));
+        return likesFilmStorage.getPopularFilms(count, genreId, year);
     }
 
     /**
