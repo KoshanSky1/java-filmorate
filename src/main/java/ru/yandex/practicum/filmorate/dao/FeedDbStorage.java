@@ -28,7 +28,7 @@ public class FeedDbStorage implements FeedStorage {
         String sql =
                 "select * " +
                         "from F04_FEED where U01_ID = ?";
-        List<Event> a = new ArrayList<>();
+        
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeEvent(rs), idUser);
     }
 
