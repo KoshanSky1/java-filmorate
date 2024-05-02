@@ -4,15 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeption.ErrorResponse;
 import ru.yandex.practicum.filmorate.json.SuccessJSON;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -95,12 +87,19 @@ public class FilmController {
     }
 
     @SneakyThrows
+    @GetMapping("/common")
+    public ResponseEntity<List<Film>> getCommonFilms(@RequestParam int userId, @RequestParam int friendId) {
+        log.info("---START GET COMMON FILMS ENDPOINT---");
+        return new ResponseEntity<>(filmService.getCommonFilms(userId, friendId), HttpStatus.OK);
+    }
+
+    @SneakyThrows
     @GetMapping("/director/{idDirector}")
     public ResponseEntity<List<Film>> searchFilmsByDirector(@PathVariable("idDirector") int idDirector,
                                                             @RequestParam(required = false) String sortBy) {
         if (sortBy.equals("year")) {
             log.info("---START SEARCH FILMS BY DIRECTOR, SORTED BY YEAR ENDPOINT---");
-             return new ResponseEntity<>(filmService.searchFilmsByDirectorSortedByYear(idDirector), HttpStatus.OK);
+            return new ResponseEntity<>(filmService.searchFilmsByDirectorSortedByYear(idDirector), HttpStatus.OK);
         } else if (sortBy.equals("likes")) {
             log.info("---START SEARCH FILMS BY DIRECTOR, SORTED BY LIKES ENDPOINT---");
             return new ResponseEntity<>(filmService.searchFilmsByDirectorSortedByLikes(idDirector), HttpStatus.OK);

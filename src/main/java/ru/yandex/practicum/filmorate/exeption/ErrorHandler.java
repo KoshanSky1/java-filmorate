@@ -28,9 +28,16 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
             UserNotFoundException.class,
             MpaNotFoundException.class,
             GenreNotFoundException.class,
+            ReviewNotFoundException.class,
             DirectorNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final RuntimeException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(ReviewCreateException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleReviewCreateException(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
 
