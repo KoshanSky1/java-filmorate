@@ -92,7 +92,7 @@ public class FilmService {
         return directorStorage.searchFilmsByDirector(idDirector);
     }
 
-    public List<Film>searchFilmsByDirectorSortedByYear(int idDirector) {
+    public List<Film> searchFilmsByDirectorSortedByYear(int idDirector) {
         log.info("Start get films by director, sorted by year");
         return directorStorage.searchFilmsByDirectorSortedByYear(idDirector);
     }
