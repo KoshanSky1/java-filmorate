@@ -102,7 +102,7 @@ public class ReviewsDbStorage implements ReviewsStorage {
 
     @Override
     public Review updateReview(Review changedReview) {
-        var review = getReview(changedReview.getReviewId());
+        Review review = getReview(changedReview.getReviewId());
         review.setIsPositive(changedReview.getIsPositive());
         review.setContent(changedReview.getContent());
         changeReview(review);
@@ -118,13 +118,13 @@ public class ReviewsDbStorage implements ReviewsStorage {
 
     @Override
     public boolean deleteReview(int reviewId) {
-        var review = getReview(reviewId);
+        Review review = getReview(reviewId);
         String sqlQuery =
                 "delete " +
                         "from R01_REVIEWS " +
                         "where R01_ID = ?";
 
-        var isDeleted = jdbcTemplate.update(sqlQuery, reviewId) > 0;
+        boolean isDeleted = jdbcTemplate.update(sqlQuery, reviewId) > 0;
         if (isDeleted) {
             feedDbStorage.addEvent(Event.builder()
                     .timestamp(Instant.now().toEpochMilli())

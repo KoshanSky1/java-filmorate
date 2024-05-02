@@ -29,6 +29,8 @@ public class LikesFilmDbStorage implements LikesFilmStorage {
     private final GenreDbStorage genreDbStorage;
     private final MpaDbStorage mpaDbStorage;
     private final FeedDbStorage feedDbStorage;
+    private final DirectorDbStorage directorDbStorage;
+    private final UserDbStorage userDbStorage;
 
     @Override
     public void addLike(int idFilm, int idUser) {
@@ -57,6 +59,7 @@ public class LikesFilmDbStorage implements LikesFilmStorage {
 
     @Override
     public void deleteLike(int idFilm, int idUser) {
+        userDbStorage.getUser(idUser);
         String sql =
                 "delete from L01_LIKES_FILM " +
                         "where F01_ID = ? and U01_ID = ? ";
@@ -104,6 +107,7 @@ public class LikesFilmDbStorage implements LikesFilmStorage {
                 Objects.requireNonNull(resultSet.getDate("F01_RELEASE_DATE")).toLocalDate(),
                 resultSet.getInt("F01_DURATION"),
                 mpaDbStorage.getMpa(resultSet.getInt("M01_ID")),
-                genreDbStorage.getGenresListForFilm(resultSet.getInt("F01_ID")));
+                genreDbStorage.getGenresListForFilm(resultSet.getInt("F01_ID")),
+                directorDbStorage.getFilmDirector(resultSet.getInt("F01_ID")));
     }
 }
