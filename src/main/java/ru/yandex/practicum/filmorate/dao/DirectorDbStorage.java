@@ -115,7 +115,7 @@ public class DirectorDbStorage implements DirectorStorage {
 
     @Override
     public List<Film> searchFilmsByDirector(Integer idDirector) {
-        String sqlQuery ="select f.*, "
+        String sqlQuery = "select f.*, "
                 + "from F04_FILM_DIRECTOR AS fd "
                 + "join F01_FILM AS f on f.F01_ID = fd.F01_ID "
                 + "where fd.D01_ID = ? ";
@@ -125,7 +125,7 @@ public class DirectorDbStorage implements DirectorStorage {
 
 
     public List<Film> searchFilmsByDirectorSortedByYear(Integer idDirector) {
-        String sqlQuery ="select f.*, "
+        String sqlQuery = "select f.*, "
                 + "from F04_FILM_DIRECTOR AS fd "
                 + "join F01_FILM AS f on f.F01_ID = fd.F01_ID "
                 + "where fd.D01_ID = ? "
