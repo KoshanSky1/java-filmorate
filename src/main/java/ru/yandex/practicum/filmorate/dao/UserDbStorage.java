@@ -9,6 +9,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.feed.Event;
+import ru.yandex.practicum.filmorate.model.feed.EventType;
+import ru.yandex.practicum.filmorate.model.feed.Operation;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.sql.Date;
@@ -16,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,6 +31,7 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final FeedDbStorage feedDbStorage;
 
     @Override
     public User getUser(int idUser) {
@@ -111,6 +116,13 @@ public class UserDbStorage implements UserStorage {
 
         log.info(format("Friendship: User [%s] and friend [%s] was delete", idUser, idFriend));
         jdbcTemplate.update(sql, idUser, idFriend);
+        feedDbStorage.addEvent(Event.builder()
+                .timestamp(Instant.now().toEpochMilli())
+                .userId(idUser)
+                .entityId(idFriend)
+                .eventType(EventType.FRIEND)
+                .operation(Operation.REMOVE)
+                .build());
     }
 
     @Override
@@ -165,7 +177,13 @@ public class UserDbStorage implements UserStorage {
 
             return preparedStatement;
         }, keyHolder);
-
+        feedDbStorage.addEvent(Event.builder()
+                .timestamp(Instant.now().toEpochMilli())
+                .userId(idUser)
+                .entityId(idFriend)
+                .eventType(EventType.FRIEND)
+                .operation(Operation.ADD)
+                .build());
         checkConfirmation(idUser, idFriend);
     }
 
