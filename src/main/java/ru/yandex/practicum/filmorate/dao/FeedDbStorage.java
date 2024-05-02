@@ -56,7 +56,7 @@ public class FeedDbStorage implements FeedStorage {
 
     private Event makeEvent(ResultSet resultSet) throws SQLException {
         return Event.builder()
-                .eventId(resultSet.getInt("F05_ID"))
+                .eventId(resultSet.getInt("F04_ID"))
                 .userId(resultSet.getInt("U01_ID"))
                 .timestamp(resultSet.getLong("F04_TIMESTAMP"))
                 .eventType(EventType.valueOf(resultSet.getString("F04_EVENT_TYPE")))
