@@ -78,7 +78,7 @@ public class DirectorDbStorage implements DirectorStorage {
 
     @Override
     public boolean removeDirectorFromDatabase(int idDirector) {
-        String sql = "DELETE FROM F04_FILM_DIRECTOR WHERE D01_ID = ?";
+        String sql = "DELETE FROM F05_FILM_DIRECTOR WHERE D01_ID = ?";
         jdbcTemplate.update(sql, idDirector);
         String sqlQuery = "DELETE FROM D01_DIRECTOR WHERE D01_ID = ?";
         return jdbcTemplate.update(sqlQuery, idDirector) > 0;
@@ -86,7 +86,7 @@ public class DirectorDbStorage implements DirectorStorage {
 
 
     public void addDirectorToFilm(Integer idFilm, List<Director> directors) {
-        String sql = "INSERT INTO F04_FILM_DIRECTOR(F01_ID, D01_ID) "
+        String sql = "INSERT INTO F05_FILM_DIRECTOR(F01_ID, D01_ID) "
                 + "VALUES (?, ?)";
 
         if (directors == null || directors.isEmpty()) {
@@ -109,14 +109,14 @@ public class DirectorDbStorage implements DirectorStorage {
     }
 
     public void removeDirectorFromFilm(Integer idFilm) {
-        String sqlQuery = "DELETE FROM F04_FILM_DIRECTOR WHERE F01_ID = ? ";
+        String sqlQuery = "DELETE FROM F05_FILM_DIRECTOR WHERE F01_ID = ? ";
         jdbcTemplate.update(sqlQuery, idFilm);
     }
 
     @Override
     public List<Film> searchFilmsByDirector(Integer idDirector) {
         String sqlQuery = "select f.*, "
-                + "from F04_FILM_DIRECTOR AS fd "
+                + "from F05_FILM_DIRECTOR AS fd "
                 + "join F01_FILM AS f on f.F01_ID = fd.F01_ID "
                 + "where fd.D01_ID = ? ";
 
@@ -126,7 +126,7 @@ public class DirectorDbStorage implements DirectorStorage {
 
     public List<Film> searchFilmsByDirectorSortedByYear(Integer idDirector) {
         String sqlQuery = "select f.*, "
-                + "from F04_FILM_DIRECTOR AS fd "
+                + "from F05_FILM_DIRECTOR AS fd "
                 + "join F01_FILM AS f on f.F01_ID = fd.F01_ID "
                 + "where fd.D01_ID = ? "
                 + "order by f.F01_RELEASE_DATE ";
@@ -138,7 +138,7 @@ public class DirectorDbStorage implements DirectorStorage {
         getDirectorById(idDirector);
 
         String sqlQuery = "SELECT * FROM F01_FILM "
-                + "JOIN F04_FILM_DIRECTOR AS fd ON fd.F01_ID = F01_FILM.F01_ID "
+                + "JOIN F05_FILM_DIRECTOR AS fd ON fd.F01_ID = F01_FILM.F01_ID "
                 + "LEFT JOIN (SELECT F01_ID, COUNT (L01_LIKES_FILM.U01_ID) as count from L01_LIKES_FILM "
                 + "GROUP BY F01_ID) AS lf ON lf.F01_ID = F01_FILM.F01_ID "
                 + "WHERE fd.D01_ID = ? "
@@ -150,7 +150,7 @@ public class DirectorDbStorage implements DirectorStorage {
 
     public List<Director> getFilmDirector(int idFilm) {
         String sql = "select d.* " +
-                "from F04_FILM_DIRECTOR AS fd " +
+                "from F05_FILM_DIRECTOR AS fd " +
                 "join D01_DIRECTOR AS d on d.D01_ID = fd.D01_ID " +
                 "where F01_ID = ?";
 
