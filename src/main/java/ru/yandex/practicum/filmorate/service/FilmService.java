@@ -122,4 +122,17 @@ public class FilmService {
         log.info("Start get films by director, sorted by likes");
         return directorStorage.searchFilmsByDirectorSortedByLikes(idDirector);
     }
+
+    /**
+     * Возвращает список фильмов, отсортированных по популярности.
+     *
+     * @param query запрос
+     * @param by параметры запроса
+     * @return список фильмов
+     */
+    public List<Film> searchFilms(String query, String by) {
+        log.info(format("Start search films query = [%s], by = [%s]", query, by));
+        System.out.println();
+        return filmStorage.searchFilms(query, by);
+    }
 }
