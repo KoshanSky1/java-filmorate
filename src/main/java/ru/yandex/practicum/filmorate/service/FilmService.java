@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.LikesFilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -24,13 +25,18 @@ public class FilmService {
     private final UserStorage userStorage;
     private final LikesFilmStorage likesFilmStorage;
 
+    private final DirectorStorage directorStorage;
+
     @Autowired
     public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage,
                        @Qualifier("LikesFilmDbStorage") LikesFilmStorage likesFilmStorage,
-                       @Qualifier("UserDbStorage") UserStorage userStorage) {
+                       @Qualifier("UserDbStorage") UserStorage userStorage,
+                       @Qualifier("DirectorDbStorage") DirectorStorage directorStorage
+    ) {
         this.filmStorage = filmStorage;
         this.likesFilmStorage = likesFilmStorage;
         this.userStorage = userStorage;
+        this.directorStorage = directorStorage;
     }
 
 
@@ -98,5 +104,20 @@ public class FilmService {
     public List<Film> getCommonFilms(int idUser, int idFriend) {
         log.info(format("Start get common films idUser = [%s] and idFriend = [%s]", idUser, idFriend));
         return filmStorage.getCommonFilms(idUser, idFriend);
+    }
+
+    public List<Film> searchFilmsByDirector(int idDirector) {
+        log.info("Start get films by director, no sorted");
+        return directorStorage.searchFilmsByDirector(idDirector);
+    }
+
+    public List<Film> searchFilmsByDirectorSortedByYear(int idDirector) {
+        log.info("Start get films by director, sorted by year");
+        return directorStorage.searchFilmsByDirectorSortedByYear(idDirector);
+    }
+
+    public List<Film> searchFilmsByDirectorSortedByLikes(int idDirector) {
+        log.info("Start get films by director, sorted by likes");
+        return directorStorage.searchFilmsByDirectorSortedByLikes(idDirector);
     }
 }
