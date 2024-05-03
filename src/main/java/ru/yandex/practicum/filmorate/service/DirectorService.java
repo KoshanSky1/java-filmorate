@@ -1,49 +1,18 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 
 import java.util.List;
 
-import static java.lang.String.format;
+public interface DirectorService {
+    List<Director> getAllDirectors();
 
-@Slf4j
-@Service
-public class DirectorService {
+    Director getDirectorById(int idDirector);
 
-    private final DirectorStorage directorStorage;
+    Director addDirectorToDB(Director director);
 
-    @Autowired
-    public DirectorService(DirectorStorage directorStorage) {
-        this.directorStorage = directorStorage;
-    }
+    Director updateDirector(Director director);
 
-    public List<Director> getAllDirectors() {
-        log.info("Start get all director");
-        return directorStorage.getAllDirectors();
-    }
-
-    public Director getDirectorById(int idDirector) {
-        log.info("Start get director by id");
-        return directorStorage.getDirectorById(idDirector);
-    }
-
-    public Director addDirectorToDB(Director director) {
-        log.info("Add director: " + director + " to DB");
-        return directorStorage.addDirectorToDatabase(director);
-    }
-
-    public Director updateDirector(Director director) {
-        log.info(format("Start update idDirector = [%s]", director.getId()));
-        return directorStorage.updateDirector(director);
-    }
-
-    public boolean removeDirectorFromDB(Integer idDirector) {
-        log.info("Remove director: " + idDirector + " from DB");
-        return directorStorage.removeDirectorFromDatabase(idDirector);
-    }
+    boolean removeDirectorFromDB(Integer idDirector);
 
 }

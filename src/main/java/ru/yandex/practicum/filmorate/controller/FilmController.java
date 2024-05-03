@@ -96,7 +96,6 @@ public class FilmController {
         return new ResponseEntity<>(filmService.getPopularFilms(count, genreId, year), HttpStatus.OK);
     }
 
-    @SneakyThrows
     @GetMapping("/common")
     public ResponseEntity<List<Film>> getCommonFilms(@RequestParam int userId, @RequestParam int friendId) {
         log.info("---START GET COMMON FILMS ENDPOINT---");
