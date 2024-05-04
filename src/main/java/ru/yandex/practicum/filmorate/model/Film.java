@@ -28,5 +28,6 @@ public class Film {
     @NotNull(message = "Mpa id is required")
     private Mpa mpa;
     private List<Genre> genres;
+    private List<Director> directors;
 
 }

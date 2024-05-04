@@ -89,8 +89,40 @@ public class FilmController {
 
     @SneakyThrows
     @GetMapping("/popular")
-    public ResponseEntity<List<Film>> getMostPopularFilms(@RequestParam(defaultValue = "10") int count) {
+    public ResponseEntity<List<Film>> getMostPopularFilms(@RequestParam(value = "count", defaultValue = "10") Integer count,
+                                                          @RequestParam(value = "genreId", required = false) Integer genreId,
+                                                          @RequestParam(value = "year", required = false) Integer year) {
         log.info("---START GET MOST POPULAR FILMS ENDPOINT---");
-        return new ResponseEntity<>(filmService.getPopularFilms(count), HttpStatus.OK);
+        return new ResponseEntity<>(filmService.getPopularFilms(count, genreId, year), HttpStatus.OK);
+    }
+
+    @GetMapping("/common")
+    public ResponseEntity<List<Film>> getCommonFilms(@RequestParam int userId, @RequestParam int friendId) {
+        log.info("---START GET COMMON FILMS ENDPOINT---");
+        return new ResponseEntity<>(filmService.getCommonFilms(userId, friendId), HttpStatus.OK);
+    }
+
+    @SneakyThrows
+    @GetMapping("/director/{idDirector}")
+    public ResponseEntity<List<Film>> searchFilmsByDirector(@PathVariable("idDirector") int idDirector,
+                                                            @RequestParam(required = false) String sortBy) {
+        if (sortBy.equals("year")) {
+            log.info("---START SEARCH FILMS BY DIRECTOR, SORTED BY YEAR ENDPOINT---");
+            return new ResponseEntity<>(filmService.searchFilmsByDirectorSortedByYear(idDirector), HttpStatus.OK);
+        } else if (sortBy.equals("likes")) {
+            log.info("---START SEARCH FILMS BY DIRECTOR, SORTED BY LIKES ENDPOINT---");
+            return new ResponseEntity<>(filmService.searchFilmsByDirectorSortedByLikes(idDirector), HttpStatus.OK);
+        } else {
+            log.info("---START SEARCH FILMS BY DIRECTOR, NO SORTED ENDPOINT---");
+            return new ResponseEntity<>(filmService.searchFilmsByDirector(idDirector), HttpStatus.OK);
+        }
+    }
+
+    @SneakyThrows
+    @GetMapping("/search")
+    public ResponseEntity<List<Film>> searchFilms(@RequestParam(value = "query") String query,
+                                                  @RequestParam(value = "by") String by) {
+        log.info("---START SEARCH FILMS ENDPOINT---");
+        return new ResponseEntity<>(filmService.searchFilms(query, by), HttpStatus.OK);
     }
 }

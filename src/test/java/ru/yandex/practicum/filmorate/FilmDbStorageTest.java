@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
@@ -28,20 +30,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class FilmDbStorageTest {
 
     private final FilmStorage filmStorage;
+    private final DirectorStorage directorStorage;
     private final Genre genre = new Genre(1, "Комедия");
     private final Mpa mpa = new Mpa(1, "G");
+    private final Director director = new Director(1, "Режиссер");
     private final Film film1 = new Film(1, "God Father", "Film about father",
-            LocalDate.now(), 240, mpa, List.of(genre));
+            LocalDate.now(), 240, mpa, List.of(genre), List.of(director));
     private final Film film2 = new Film(2, "God Father2", "Film about father2",
-            LocalDate.now(), 240, mpa, List.of(genre));
+            LocalDate.now(), 240, mpa, List.of(genre), List.of(director));
     private final Film film3 = new Film(3, "God Father3", "Film about father3",
-            LocalDate.now(), 240, mpa, List.of(genre));
+            LocalDate.now(), 240, mpa, List.of(genre), List.of(director));
     private final Film film4 = new Film(4, "God Father4", "Film about father4",
-            LocalDate.now(), 240, mpa, List.of(genre));
+            LocalDate.now(), 240, mpa, List.of(genre), List.of(director));
 
 
     @BeforeEach
     void beforeEach() {
+        directorStorage.addDirectorToDatabase(director);
+
         filmStorage.createFilm(film1);
         filmStorage.createFilm(film2);
         filmStorage.createFilm(film3);

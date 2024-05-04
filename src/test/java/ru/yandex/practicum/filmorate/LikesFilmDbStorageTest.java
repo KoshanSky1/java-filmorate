@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.LikesFilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -30,20 +28,24 @@ public class LikesFilmDbStorageTest {
     private final LikesFilmStorage likesFilmStorage;
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final DirectorStorage directorStorage;
     private final Genre genre = new Genre(1, "Комедия");
     private final Mpa mpa = new Mpa(1, "G");
+    private final Director director = new Director(1, "Режиссер");
     private final Film film1 = new Film(1, "God Father", "Film about father",
-            LocalDate.now(), 240, mpa, List.of(genre));
+            LocalDate.now(), 240, mpa, List.of(genre), List.of(director));
     private final Film film2 = new Film(2, "God Father2", "Film about father2",
-            LocalDate.now(), 240, mpa, List.of(genre));
+            LocalDate.now(), 240, mpa, List.of(genre), List.of(director));
     private final Film film3 = new Film(3, "God Father3", "Film about father3",
-            LocalDate.now(), 240, mpa, List.of(genre));
+            LocalDate.now(), 240, mpa, List.of(genre), List.of(director));
     private final User user1 = new User(1, "test@gmail.com", "testLogin", "Name", LocalDate.of(2000, 1, 1));
     private final User user2 = new User(2, "test@gmail.com", "testLogin", "Name", LocalDate.of(2000, 1, 1));
 
     @Test
     @SneakyThrows
     public void testLikeFilm() {
+        directorStorage.addDirectorToDatabase(director);
+
         filmStorage.createFilm(film1);
         filmStorage.createFilm(film2);
         filmStorage.createFilm(film3);
@@ -64,7 +66,7 @@ public class LikesFilmDbStorageTest {
         likesFilmStorage.deleteLike(film3.getId(), user2.getId());
         likesFilmStorage.deleteLike(film3.getId(), user1.getId());
 
-        List<Film> result = likesFilmStorage.getPopularFilms(2);
+        List<Film> result = likesFilmStorage.getPopularFilms(2, null, null);
 
         assertThat(result.get(0), is(film1));
         assertThat(result.get(1), is(film3));
@@ -74,7 +76,7 @@ public class LikesFilmDbStorageTest {
     public void testGetMostLikedFilmsWithLimit() {
         testLikeFilm();
 
-        List<Film> result = likesFilmStorage.getPopularFilms(2);
+        List<Film> result = likesFilmStorage.getPopularFilms(2, null, null);
 
         assertThat(result.get(0), is(film3));
         assertThat(result.get(1), is(film1));
