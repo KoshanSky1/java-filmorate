@@ -4,9 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.InMemoryUserService;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserValidationTest {
     private final InMemoryUserStorage userStorage = new InMemoryUserStorage();
-    private final UserService userService = new UserService(userStorage);
+    private final InMemoryUserService userService = new InMemoryUserService(userStorage);
     private final UserController userController = new UserController(userService);
     private final User userNumberOne = User.builder()
             .email("koshansky@mail.ru")
@@ -33,7 +34,7 @@ class UserValidationTest {
     }
 
     @Test
-    void create() {
+    public void create() {
         final Collection<User> users = userController.findAll();
 
         assertNotNull(userNumberOne, "Пользователь не найден.");
@@ -43,7 +44,7 @@ class UserValidationTest {
     }
 
     @Test
-    void createAnExistingUser() {
+    public void createAnExistingUser() {
         final ValidationException exception = assertThrows(
                 ValidationException.class,
                 new Executable() {
@@ -59,7 +60,7 @@ class UserValidationTest {
     }
 
     @Test
-    void createWithEmptyEmail() {
+    public void createWithEmptyEmail() {
         User testUser = User.builder()
                 .email("   ")
                 .login("Test")
@@ -82,7 +83,7 @@ class UserValidationTest {
     }
 
     @Test
-    void createWithoutEmailSymbol() {
+    public void createWithoutEmailSymbol() {
         User testUser = User.builder()
                 .email("test.ru")
                 .login("Test")
@@ -105,7 +106,7 @@ class UserValidationTest {
     }
 
     @Test
-    void createWithEmptyLogin() {
+    public void createWithEmptyLogin() {
         User testUser = User.builder()
                 .email("test@mail.ru")
                 .login("   ")
@@ -128,7 +129,7 @@ class UserValidationTest {
     }
 
     @Test
-    void createWithLoginContainsSpaces() {
+    public void createWithLoginContainsSpaces() {
         User testUser = User.builder()
                 .email("test@mail.ru")
                 .login("Test test")
@@ -151,7 +152,7 @@ class UserValidationTest {
     }
 
     @Test
-    void createWithEmptyName() {
+    public void createWithEmptyName() {
         User testUser = User.builder()
                 .email("test@mail.ru")
                 .login("Test")
@@ -167,7 +168,7 @@ class UserValidationTest {
     }
 
     @Test
-    void createWithBirthdayFromTheFuture() {
+    public void createWithBirthdayFromTheFuture() {
         User testUser = User.builder()
                 .email("test@mail.ru")
                 .login("Test")
@@ -190,7 +191,7 @@ class UserValidationTest {
     }
 
     @Test
-    void put() {
+    public void put() {
         User updatedUser = User.builder()
                 .email("test@mail.ru")
                 .login("Test")
@@ -209,7 +210,7 @@ class UserValidationTest {
     }
 
     @Test
-    void putWithNonExistentId() {
+    public void putWithNonExistentId() {
         User updatedUser = User.builder()
                 .email("test@mail.ru")
                 .login("Test")
@@ -219,8 +220,8 @@ class UserValidationTest {
 
         updatedUser.setId(9999);
 
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
+        final UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
                 new Executable() {
                     @Override
                     public void execute() {
@@ -228,13 +229,13 @@ class UserValidationTest {
                     }
                 });
 
-        assertEquals("Пользователь не найден.", exception.getMessage());
+        assertEquals("Пользователь № 9999 не найден", exception.getMessage());
         final Collection<User> users = userController.findAll();
         assertEquals(1, users.size(), "Изменилось количество пользователей.");
     }
 
     @Test
-    void putWithAnEmptyEmail() {
+    public void putWithAnEmptyEmail() {
         User updatedUser = User.builder()
                 .email("   ")
                 .login("Test")
@@ -259,7 +260,7 @@ class UserValidationTest {
     }
 
     @Test
-    void putWithoutEmailSymbol() {
+    public void putWithoutEmailSymbol() {
         User updatedUser = User.builder()
                 .email("test.ru")
                 .login("Test")
@@ -284,7 +285,7 @@ class UserValidationTest {
     }
 
     @Test
-    void putWithAnEmptyLogin() {
+    public void putWithAnEmptyLogin() {
         User updatedUser = User.builder()
                 .email("test@yandex.ru")
                 .login("   ")
@@ -309,7 +310,7 @@ class UserValidationTest {
     }
 
     @Test
-    void putWithAnLoginContainsSpaces() {
+    public void putWithAnLoginContainsSpaces() {
         User updatedUser = User.builder()
                 .email("test@yandex.ru")
                 .login("Test test")
@@ -334,7 +335,7 @@ class UserValidationTest {
     }
 
     @Test
-    void putWithEmptyName() {
+    public void putWithEmptyName() {
         User updatedUser = User.builder()
                 .email("test@mail.ru")
                 .login("Test")
@@ -351,7 +352,7 @@ class UserValidationTest {
     }
 
     @Test
-    void putWithBirthdayFromTheFuture() {
+    public void putWithBirthdayFromTheFuture() {
         User updatedUser = User.builder()
                 .email("test@mail.ru")
                 .login("Test")
