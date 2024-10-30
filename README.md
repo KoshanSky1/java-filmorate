@@ -12,3 +12,5 @@
 1. Власенко Виктория https://github.com/vvictory96
 2. Крутских Андрей https://github.com/ppxxd
 3. Галина Лобачёва https://github.com/KoshanSky1
+4. https://github.com/RedokPaw
+5. https://github.com/sharshikov
