@@ -14,4 +14,5 @@
 5. [Sharshikov](https://github.com/sharshikov)
 
 --------
-### Стек технологий: Java, SQL, PostgreSQL, Spring Boot, Hibernate ORM, REST, Apache Maven, Docker
+### Стек технологий:
+Java, SQL, PostgreSQL, Spring Boot, Hibernate ORM, REST, Apache Maven, Docker
