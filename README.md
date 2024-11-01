@@ -7,7 +7,7 @@
 выпуска и т.д.), а также добавлять друг друга в друзья и ставить лайки к фильмам.
 
 Команда Разрабочиков:
-1. Власенко Виктория https://github.com/vvictory96
+1. [Власенко Виктория](https://github.com/vvictory96)
 2. Крутских Андрей https://github.com/ppxxd
 3. Галина Лобачёва https://github.com/KoshanSky1
 4. RedokPaw https://github.com/RedokPaw
